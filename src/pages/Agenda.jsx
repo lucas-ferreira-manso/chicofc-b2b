@@ -52,6 +52,11 @@ export default function Agenda() {
   const tipoLabel = { mensal: 'Mensalista', avulso: 'Avulso', espera: 'Espera' }
   const tipoValor = { mensal: `R$ ${CONFIG.mensalidadeSociety.toLocaleString('pt-BR')}/mês`, avulso: `R$ ${CONFIG.valorAvulso.toLocaleString('pt-BR')}/hora`, espera: 'Aguardando' }
 
+  const ocupacaoPorDia = DIAS.map(dia => {
+    const slots = HORARIOS.map(h => agendaQuadra[dia]?.[h]).filter(Boolean)
+    return { dia, ocupados: slots.length, total: HORARIOS.length }
+  })
+
   return (
     <div className="page">
       <div className="page-inner">
@@ -81,37 +86,40 @@ export default function Agenda() {
           </div>
         </div>
 
-        {/* Seletor quadra + legenda */}
-        <div style={{
-          background: '#fff', borderRadius: 'var(--radius)',
-          padding: '16px 20px', border: '1px solid var(--border)',
-          boxShadow: 'var(--shadow-sm)', marginBottom: 16,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12,
-        }}>
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {QUADRAS.map(q => (
-              <button key={q.id} onClick={() => setQuadraId(q.id)}
-                style={{
-                  padding: '8px 16px', borderRadius: 8, border: 'none',
-                  fontSize: 13, fontWeight: 500, cursor: 'pointer',
-                  background: quadraId === q.id ? q.cor : '#f2f4f8',
-                  color: quadraId === q.id ? '#fff' : 'var(--text-2)',
-                  transition: 'all 0.15s',
-                  boxShadow: quadraId === q.id ? `0 4px 12px ${q.cor}40` : 'none',
-                }}>
-                {q.nome}
-              </button>
-            ))}
-          </div>
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-            {[['#082996','Mensalista'],['#b45309','Avulso'],['#9aa0a6','Espera'],['#e8eaed','Vago']].map(([cor,label]) => (
-              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 10, height: 10, borderRadius: 3, background: cor, border: cor === '#e8eaed' ? '1px solid #ccc' : 'none' }} />
-                <span style={{ fontSize: 12, color: 'var(--text-2)' }}>{label}</span>
+        <div className="dash-layout">
+          {/* Coluna esquerda */}
+          <div style={{ minWidth: 0 }}>
+            {/* Seletor quadra + legenda */}
+            <div style={{
+              background: '#fff', borderRadius: 'var(--radius)',
+              padding: '16px 20px', border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-sm)', marginBottom: 16,
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12,
+            }}>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {QUADRAS.map(q => (
+                  <button key={q.id} onClick={() => setQuadraId(q.id)}
+                    style={{
+                      padding: '8px 16px', borderRadius: 8, border: 'none',
+                      fontSize: 13, fontWeight: 500, cursor: 'pointer',
+                      background: quadraId === q.id ? q.cor : '#f2f4f8',
+                      color: quadraId === q.id ? '#fff' : 'var(--text-2)',
+                      transition: 'all 0.15s',
+                      boxShadow: quadraId === q.id ? `0 4px 12px ${q.cor}40` : 'none',
+                    }}>
+                    {q.nome}
+                  </button>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                {[['#082996','Mensalista'],['#b45309','Avulso'],['#9aa0a6','Espera'],['#e8eaed','Vago']].map(([cor,label]) => (
+                  <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 3, background: cor, border: cor === '#e8eaed' ? '1px solid #ccc' : 'none' }} />
+                    <span style={{ fontSize: 12, color: 'var(--text-2)' }}>{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
         {/* Grade */}
         <div style={{
@@ -120,7 +128,7 @@ export default function Agenda() {
           boxShadow: 'var(--shadow-sm)',
         }}>
           <div style={{ overflowX: 'auto' }}>
-            <div style={{ minWidth: 640 }}>
+            <div style={{ minWidth: 640, width: '100%' }}>
               {/* Header dias */}
               <div style={{
                 display: 'grid', gridTemplateColumns: '76px repeat(6, 1fr)',
@@ -177,6 +185,103 @@ export default function Agenda() {
             </div>
           </div>
         </div>
+          </div>{/* fim coluna esquerda */}
+
+          {/* Painel direito */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Ocupação geral */}
+            <div style={{
+              background: '#fff', borderRadius: 'var(--radius)',
+              padding: '20px 22px', border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-sm)',
+            }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 16 }}>
+                Ocupação — {quadraAtual?.nome}
+              </div>
+              <div style={{ display: 'flex', gap: 16, marginBottom: 18 }}>
+                <div style={{ flex: 1, textAlign: 'center' }}>
+                  <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--blue)', lineHeight: 1 }}>{Math.round((slotsOcupados / totalSlots) * 100)}%</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 4 }}>ocupado</div>
+                </div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                    <span style={{ color: 'var(--text-2)' }}>Ocupados</span>
+                    <span style={{ fontWeight: 700, color: 'var(--blue)' }}>{slotsOcupados}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                    <span style={{ color: 'var(--text-2)' }}>Vagos</span>
+                    <span style={{ fontWeight: 700, color: 'var(--text-3)' }}>{totalSlots - slotsOcupados}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                    <span style={{ color: 'var(--text-2)' }}>Total</span>
+                    <span style={{ fontWeight: 700, color: 'var(--text)' }}>{totalSlots}</span>
+                  </div>
+                </div>
+              </div>
+              <div style={{ height: 8, background: '#f0f2f5', borderRadius: 4, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${Math.round((slotsOcupados / totalSlots) * 100)}%`, background: 'linear-gradient(90deg, #082996, #1a3fbe)', borderRadius: 4 }} />
+              </div>
+            </div>
+
+            {/* Por dia da semana */}
+            <div style={{
+              background: '#fff', borderRadius: 'var(--radius)',
+              padding: '20px 22px', border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-sm)',
+            }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 14 }}>Por dia da semana</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {ocupacaoPorDia.map(({ dia, ocupados, total }) => (
+                  <div key={dia}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                      <span style={{ fontSize: 12, color: 'var(--text-2)' }}>{dia}</span>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: ocupados > 0 ? 'var(--blue)' : 'var(--text-3)' }}>{ocupados}/{total}</span>
+                    </div>
+                    <div style={{ height: 5, background: '#f0f2f5', borderRadius: 3, overflow: 'hidden' }}>
+                      <div style={{
+                        height: '100%',
+                        width: `${Math.round((ocupados / total) * 100)}%`,
+                        background: ocupados === total ? '#34a853' : ocupados > 0 ? '#082996' : '#e8eaed',
+                        borderRadius: 3,
+                      }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quadras */}
+            <div style={{
+              background: '#fff', borderRadius: 'var(--radius)',
+              padding: '20px 22px', border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-sm)',
+            }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 14 }}>Quadras</div>
+              {QUADRAS.map(q => {
+                const ag = agenda[q.id] || {}
+                const ocp = Object.values(ag).reduce((t, d) => t + Object.values(d).filter(Boolean).length, 0)
+                const tot = DIAS.length * HORARIOS.length
+                return (
+                  <div key={q.id} onClick={() => setQuadraId(q.id)}
+                    style={{
+                      padding: '10px 12px', borderRadius: 10, cursor: 'pointer',
+                      background: quadraId === q.id ? '#f0f4ff' : 'transparent',
+                      border: `1.5px solid ${quadraId === q.id ? '#082996' : 'transparent'}`,
+                      marginBottom: 6, transition: 'all 0.15s',
+                    }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: q.cor }} />
+                        <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{q.nome}</span>
+                      </div>
+                      <span style={{ fontSize: 11, color: 'var(--text-3)' }}>{ocp}/{tot}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>{/* fim dash-layout */}
       </div>
 
       {/* Modal adicionar */}
