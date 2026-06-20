@@ -65,71 +65,109 @@ export default function Financeiro() {
   }
 
   return (
-    <div style={{ padding: '32px 36px', flex: 1, background: '#f8f9fb' }}>
-      {modalGrupo !== null && (
-        <GrupoModal grupo={modalGrupo?.id ? modalGrupo : null}
-          onSave={(form) => { salvarGrupo(form); setModalGrupo(null) }}
-          onClose={() => setModalGrupo(null)} />
-      )}
+    <div className="page">
+      <div className="page-inner">
+        {modalGrupo !== null && (
+          <GrupoModal grupo={modalGrupo?.id ? modalGrupo : null}
+            onSave={(form) => { salvarGrupo(form); setModalGrupo(null) }}
+            onClose={() => setModalGrupo(null)} />
+        )}
 
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 24 }}>
-        <div>
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a', marginBottom: 4 }}>Financeiro</h1>
-          <p style={{ fontSize: 14, color: '#5f6368' }}>Maio de 2025 · Clique no status para atualizar</p>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
+          <div>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 3 }}>Financeiro</h1>
+            <p style={{ fontSize: 13, color: 'var(--text-2)' }}>Maio de 2025 · Clique no status para atualizar</p>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={exportHTML} style={{
+              padding: '9px 16px', borderRadius: 9, background: '#e8f0ff',
+              color: '#082996', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+            }}>
+              🌐 HTML
+            </button>
+            <button onClick={exportTXT} style={{
+              padding: '9px 16px', borderRadius: 9, background: 'var(--blue)',
+              color: '#fff', border: 'none', fontSize: 13, fontWeight: 600,
+              cursor: 'pointer', boxShadow: '0 4px 14px rgba(8,41,150,0.3)',
+            }}>
+              📄 TXT
+            </button>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={exportHTML} style={{ padding: '10px 16px', borderRadius: 8, background: '#e6f8ff', color: '#082996', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-            🌐 HTML
-          </button>
-          <button onClick={exportTXT} style={{ padding: '10px 16px', borderRadius: 8, background: '#082996', color: '#fff', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-            📄 TXT
-          </button>
-        </div>
-      </div>
 
-      {/* KPIs */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 20 }}>
-        {[
-          { label: 'Recebido', value: `R$ ${totalRecebido.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>g.pago&&g.status==='ativo').length} grupos`, color: '#0d7a3e', bg: '#e6f4ea', icon: '✅' },
-          { label: 'Pendente', value: `R$ ${totalPendente.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>!g.pago&&g.status==='ativo').length} grupos`, color: '#ea4335', bg: '#fce8e6', icon: '⏳' },
-          { label: 'Total esperado', value: `R$ ${totalEsperado.toLocaleString('pt-BR')}`, sub: 'Maio/2025', color: '#082996', bg: '#e6f8ff', icon: '📊' },
-        ].map(c => (
-          <div key={c.label} style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', border: '1px solid #e8eaed', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-              <div>
-                <div style={{ fontSize: 12, color: '#5f6368', fontWeight: 500, marginBottom: 6 }}>{c.label}</div>
-                <div style={{ fontSize: 26, fontWeight: 700, color: c.color }}>{c.value}</div>
-                <div style={{ fontSize: 12, color: '#9aa0a6', marginTop: 4 }}>{c.sub}</div>
+        {/* KPIs */}
+        <div className="kpi-grid-3" style={{ marginBottom: 20 }}>
+          {[
+            { label: 'Recebido', value: `R$ ${totalRecebido.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>g.pago&&g.status==='ativo').length} grupos`, color: '#0d7a3e', bg: '#e6f4ea', icon: '✅' },
+            { label: 'Pendente', value: `R$ ${totalPendente.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>!g.pago&&g.status==='ativo').length} grupos`, color: '#ea4335', bg: '#fce8e6', icon: '⏳' },
+            { label: 'Total esperado', value: `R$ ${totalEsperado.toLocaleString('pt-BR')}`, sub: 'Maio/2025', color: '#082996', bg: '#e8f0ff', icon: '📊' },
+          ].map(c => (
+            <div key={c.label} style={{
+              background: '#fff', borderRadius: 'var(--radius)',
+              padding: '20px 24px', border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-sm)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+                <div>
+                  <div style={{ fontSize: 11, color: 'var(--text-2)', fontWeight: 500, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{c.label}</div>
+                  <div style={{ fontSize: 26, fontWeight: 700, color: c.color, lineHeight: 1 }}>{c.value}</div>
+                </div>
+                <div style={{ width: 42, height: 42, borderRadius: 11, background: c.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>{c.icon}</div>
               </div>
-              <div style={{ width: 38, height: 38, borderRadius: 10, background: c.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>{c.icon}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-3)' }}>{c.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Barra progresso */}
+        <div style={{
+          background: '#fff', borderRadius: 'var(--radius)',
+          padding: '22px 24px', border: '1px solid var(--border)',
+          marginBottom: 20, boxShadow: 'var(--shadow-sm)',
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>Progresso de cobrança — Maio/25</div>
+              <div style={{ fontSize: 12, color: 'var(--text-2)' }}>
+                R$ {totalRecebido.toLocaleString('pt-BR')} de R$ {totalEsperado.toLocaleString('pt-BR')}
+              </div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 28, fontWeight: 700, color: pct >= 80 ? '#0d7a3e' : 'var(--blue)', lineHeight: 1 }}>{pct}%</div>
+              <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>arrecadado</div>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Barra progresso */}
-      <div style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', border: '1px solid #e8eaed', marginBottom: 20, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#1a1a1a' }}>Progresso de cobrança — Maio/25</span>
-          <span style={{ fontSize: 13, color: '#5f6368' }}>{pct}% arrecadado</span>
+          <div style={{ height: 10, background: '#f0f2f5', borderRadius: 5, overflow: 'hidden' }}>
+            <div style={{
+              height: '100%', width: `${pct}%`,
+              background: pct >= 100 ? 'linear-gradient(90deg, #34a853, #0d7a3e)' : 'linear-gradient(90deg, #082996, #1a3fbe)',
+              borderRadius: 5, transition: 'width 0.6s ease',
+            }} />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
+            <span style={{ fontSize: 11, color: 'var(--text-3)' }}>0%</span>
+            <span style={{ fontSize: 11, color: 'var(--text-3)' }}>100%</span>
+          </div>
         </div>
-        <div style={{ height: 10, background: '#f0f0f0', borderRadius: 5, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${pct}%`, background: '#082996', borderRadius: 5, transition: 'width 0.5s' }} />
-        </div>
-      </div>
 
-      {/* Lista grupos com componente global */}
-      <div style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', border: '1px solid #e8eaed', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-        <h2 style={{ fontSize: 15, fontWeight: 600, color: '#1a1a1a', marginBottom: 16 }}>Detalhamento por grupo</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {gruposAtivos.map(g => (
-            <GrupoItem key={g.id} grupo={g}
-              onTogglePago={togglePago}
-              onCobrar={cobrar}
-              onEditar={(g) => setModalGrupo(g)}
-              onExcluir={(g) => { if (window.confirm(`Excluir "${g.nome}"?`)) excluir(g.id) }}
-            />
-          ))}
+        {/* Lista grupos */}
+        <div style={{
+          background: '#fff', borderRadius: 'var(--radius)',
+          padding: '20px 24px', border: '1px solid var(--border)',
+          boxShadow: 'var(--shadow-sm)',
+        }}>
+          <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 16 }}>Detalhamento por grupo</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {gruposAtivos.map(g => (
+              <GrupoItem key={g.id} grupo={g}
+                onTogglePago={togglePago}
+                onCobrar={cobrar}
+                onEditar={(g) => setModalGrupo(g)}
+                onExcluir={handleExcluir}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

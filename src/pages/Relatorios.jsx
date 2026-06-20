@@ -6,7 +6,7 @@ const PERIODOS = [1, 2, 3, 4, 5, 6, 12]
 
 export default function Relatorios() {
   const [periodo, setPeriodo] = useState(6)
-  const { grupos, totalRecebido, totalPendente, totalEsperado } = useGrupos()
+  const { grupos } = useGrupos()
   const dados = HISTORICO_MENSAL.slice(-periodo)
   const maxTotal = Math.max(...dados.map(d => d.total))
   const metaMensal = Math.round(CONFIG.metaAnual / 12)
@@ -66,155 +66,234 @@ export default function Relatorios() {
   }
 
   return (
-    <div style={{ padding: '32px 36px', flex: 1, background: '#f8f9fb' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 24 }}>
-        <div>
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a', marginBottom: 4 }}>Relatórios</h1>
-          <p style={{ fontSize: 14, color: '#5f6368' }}>Análise financeira da 9E10</p>
-        </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <span style={{ fontSize: 13, color: '#5f6368' }}>Exportar últimos {periodo} meses:</span>
-          <button onClick={() => exportRelatorio('html')}
-            style={{ padding: '8px 16px', borderRadius: 8, background: '#e6f8ff', color: '#082996', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-            🌐 HTML
-          </button>
-          <button onClick={() => exportRelatorio('txt')}
-            style={{ padding: '8px 16px', borderRadius: 8, background: '#082996', color: '#fff', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-            📄 TXT
-          </button>
-        </div>
-      </div>
-
-      {/* Seletor de período */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
-        {PERIODOS.map(p => (
-          <button key={p} onClick={() => setPeriodo(p)}
-            style={{ padding: '8px 16px', borderRadius: 8, border: 'none', fontSize: 13, fontWeight: 500, cursor: 'pointer', background: periodo === p ? '#082996' : '#fff', color: periodo === p ? '#fff' : '#5f6368', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', border: periodo === p ? 'none' : '1px solid #e8eaed' }}>
-            {p} {p === 1 ? 'mês' : 'meses'}
-          </button>
-        ))}
-      </div>
-
-      {/* KPIs do período */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 24 }}>
-        {[
-          { label: 'Receita total', value: `R$ ${totalPeriodo.toLocaleString('pt-BR')}`, color: '#082996', bg: '#e6f8ff', icon: '💰' },
-          { label: 'Mensalistas', value: `R$ ${totalMensal.toLocaleString('pt-BR')}`, color: '#0d7a3e', bg: '#e6f4ea', icon: '📅' },
-          { label: 'Avulsos', value: `R$ ${totalAvulso.toLocaleString('pt-BR')}`, color: '#b45309', bg: '#fef7e0', icon: '⚡' },
-          { label: 'Crescimento', value: `${crescimento >= 0 ? '+' : ''}${crescimento}%`, color: crescimento >= 0 ? '#0d7a3e' : '#ea4335', bg: crescimento >= 0 ? '#e6f4ea' : '#fce8e6', icon: crescimento >= 0 ? '📈' : '📉' },
-        ].map(c => (
-          <div key={c.label} style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', border: '1px solid #e8eaed', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-              <div>
-                <div style={{ fontSize: 12, color: '#5f6368', fontWeight: 500, marginBottom: 6 }}>{c.label}</div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: c.color }}>{c.value}</div>
-              </div>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: c.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>{c.icon}</div>
-            </div>
+    <div className="page">
+      <div className="page-inner">
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
+          <div>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 3 }}>Relatórios</h1>
+            <p style={{ fontSize: 13, color: 'var(--text-2)' }}>Análise financeira da 9E10</p>
           </div>
-        ))}
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
-
-        {/* Gráfico barras */}
-        <div style={{ background: '#fff', borderRadius: 12, padding: '24px', border: '1px solid #e8eaed', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-          <h2 style={{ fontSize: 15, fontWeight: 600, color: '#1a1a1a', marginBottom: 4 }}>Receita mensal</h2>
-          <p style={{ fontSize: 12, color: '#5f6368', marginBottom: 16 }}>Total por mês — barra de meta em tracejado</p>
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 160, position: 'relative' }}>
-            {/* Linha de meta */}
-            <div style={{ position: 'absolute', bottom: Math.round((metaMensal / maxTotal) * 140), left: 0, right: 0, borderTop: '2px dashed #ea4335', display: 'flex', alignItems: 'center' }}>
-              <span style={{ fontSize: 10, color: '#ea4335', background: '#fff', padding: '0 4px', marginLeft: 4 }}>Meta R${(metaMensal/1000).toFixed(1)}k</span>
-            </div>
-            {dados.map((d, i) => {
-              const isLast = i === dados.length - 1
-              const hTotal = Math.round((d.total / maxTotal) * 140)
-              return (
-                <div key={d.mes} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                  <div style={{ fontSize: 10, color: isLast ? '#082996' : '#9aa0a6', fontWeight: 600 }}>
-                    R${(d.total/1000).toFixed(1)}k
-                  </div>
-                  <div style={{ width: '100%', height: hTotal, background: isLast ? '#082996' : '#e6f8ff', borderRadius: '4px 4px 0 0', transition: 'height 0.5s', border: d.total >= metaMensal ? '2px solid #34a853' : 'none', boxSizing: 'border-box' }} />
-                  <div style={{ fontSize: 10, color: isLast ? '#082996' : '#9aa0a6', fontWeight: isLast ? 600 : 400 }}>{d.mes.split('/')[0]}</div>
-                </div>
-              )
-            })}
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <span style={{ fontSize: 12, color: 'var(--text-2)' }}>Exportar {periodo}m:</span>
+            <button onClick={() => exportRelatorio('html')}
+              style={{ padding: '9px 14px', borderRadius: 9, background: '#e8f0ff', color: '#082996', border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+              🌐 HTML
+            </button>
+            <button onClick={() => exportRelatorio('txt')}
+              style={{ padding: '9px 14px', borderRadius: 9, background: 'var(--blue)', color: '#fff', border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 14px rgba(8,41,150,0.3)' }}>
+              📄 TXT
+            </button>
           </div>
         </div>
 
-        {/* Gráfico composição */}
-        <div style={{ background: '#fff', borderRadius: 12, padding: '24px', border: '1px solid #e8eaed', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-          <h2 style={{ fontSize: 15, fontWeight: 600, color: '#1a1a1a', marginBottom: 4 }}>Composição da receita</h2>
-          <p style={{ fontSize: 12, color: '#5f6368', marginBottom: 16 }}>Mensalista vs Avulso por mês</p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {dados.map((d, i) => {
-              const isLast = i === dados.length - 1
-              const pctMensal = Math.round((d.mensal / d.total) * 100)
-              const pctAvulso = 100 - pctMensal
-              return (
-                <div key={d.mes} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 11, color: isLast ? '#082996' : '#9aa0a6', width: 44, fontWeight: isLast ? 600 : 400 }}>{d.mes.split('/')[0]}</span>
-                  <div style={{ flex: 1, height: 22, borderRadius: 4, overflow: 'hidden', display: 'flex' }}>
-                    <div style={{ width: `${pctMensal}%`, background: isLast ? '#082996' : '#dbeafe', transition: 'width 0.5s', display: 'flex', alignItems: 'center', paddingLeft: 6 }}>
-                      {pctMensal > 20 && <span style={{ fontSize: 10, color: '#fff', fontWeight: 600 }}>{pctMensal}%</span>}
-                    </div>
-                    <div style={{ flex: 1, background: isLast ? '#34a853' : '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 6 }}>
-                      {pctAvulso > 10 && <span style={{ fontSize: 10, color: '#fff', fontWeight: 600 }}>{pctAvulso}%</span>}
-                    </div>
-                  </div>
-                  <span style={{ fontSize: 11, color: isLast ? '#082996' : '#9aa0a6', fontWeight: isLast ? 600 : 400 }}>R${(d.total/1000).toFixed(1)}k</span>
-                </div>
-              )
-            })}
-          </div>
-          <div style={{ display: 'flex', gap: 16, marginTop: 14 }}>
-            {[['#082996','Mensalista'],['#34a853','Avulso']].map(([cor,label]) => (
-              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: cor }} />
-                <span style={{ fontSize: 12, color: '#5f6368' }}>{label}</span>
-              </div>
+        {/* Seletor de período */}
+        <div style={{
+          background: '#fff', borderRadius: 'var(--radius)',
+          padding: '16px 20px', border: '1px solid var(--border)',
+          boxShadow: 'var(--shadow-sm)', marginBottom: 20,
+          display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
+        }}>
+          <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Período</span>
+          <div style={{ display: 'flex', gap: 6, background: '#f2f4f8', borderRadius: 9, padding: 4 }}>
+            {PERIODOS.map(p => (
+              <button key={p} onClick={() => setPeriodo(p)}
+                style={{
+                  padding: '6px 14px', borderRadius: 7, border: 'none',
+                  fontSize: 12, fontWeight: 500, cursor: 'pointer',
+                  background: periodo === p ? '#082996' : 'transparent',
+                  color: periodo === p ? '#fff' : 'var(--text-2)',
+                  transition: 'all 0.15s',
+                }}>
+                {p} {p === 1 ? 'mês' : 'meses'}
+              </button>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Tabela detalhada */}
-      <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #e8eaed', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-        <div style={{ padding: '16px 24px', borderBottom: '1px solid #e8eaed' }}>
-          <h2 style={{ fontSize: 15, fontWeight: 600, color: '#1a1a1a' }}>Detalhamento mensal</h2>
+        {/* KPIs */}
+        <div className="kpi-grid" style={{ marginBottom: 20 }}>
+          {[
+            { label: 'Receita total', value: `R$ ${totalPeriodo.toLocaleString('pt-BR')}`, color: '#082996', bg: '#e8f0ff', icon: '💰' },
+            { label: 'Mensalistas', value: `R$ ${totalMensal.toLocaleString('pt-BR')}`, color: '#0d7a3e', bg: '#e6f4ea', icon: '📅' },
+            { label: 'Avulsos', value: `R$ ${totalAvulso.toLocaleString('pt-BR')}`, color: '#b45309', bg: '#fef7e0', icon: '⚡' },
+            { label: 'Crescimento', value: `${crescimento >= 0 ? '+' : ''}${crescimento}%`, color: crescimento >= 0 ? '#0d7a3e' : '#ea4335', bg: crescimento >= 0 ? '#e6f4ea' : '#fce8e6', icon: crescimento >= 0 ? '📈' : '📉' },
+          ].map(c => (
+            <div key={c.label} style={{
+              background: '#fff', borderRadius: 'var(--radius)',
+              padding: '20px', border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-sm)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8 }}>
+                <div>
+                  <div style={{ fontSize: 11, color: 'var(--text-2)', fontWeight: 500, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{c.label}</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: c.color, lineHeight: 1 }}>{c.value}</div>
+                </div>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: c.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>{c.icon}</div>
+              </div>
+            </div>
+          ))}
         </div>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ background: '#f8f9fb' }}>
-              {['Mês', 'Mensalista', 'Avulso', 'Total', 'vs Meta', 'Tendência'].map(h => (
-                <th key={h} style={{ padding: '12px 20px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: '#5f6368', borderBottom: '1px solid #e8eaed' }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {dados.map((d, i) => {
-              const isLast = i === dados.length - 1
-              const pctMeta = Math.round((d.total / metaMensal) * 100)
-              const prev = dados[i - 1]
-              const tend = prev ? (d.total >= prev.total ? '↑' : '↓') : '—'
-              const tendColor = prev ? (d.total >= prev.total ? '#0d7a3e' : '#ea4335') : '#9aa0a6'
-              return (
-                <tr key={d.mes} style={{ borderBottom: '1px solid #f0f0f0', background: isLast ? '#f0f7ff' : 'transparent' }}>
-                  <td style={{ padding: '12px 20px', fontSize: 14, fontWeight: isLast ? 700 : 500, color: isLast ? '#082996' : '#1a1a1a' }}>{d.mes}</td>
-                  <td style={{ padding: '12px 20px', fontSize: 13, color: '#1a1a1a' }}>R$ {d.mensal.toLocaleString('pt-BR')}</td>
-                  <td style={{ padding: '12px 20px', fontSize: 13, color: '#1a1a1a' }}>R$ {d.avulso.toLocaleString('pt-BR')}</td>
-                  <td style={{ padding: '12px 20px', fontSize: 14, fontWeight: 700, color: isLast ? '#082996' : '#1a1a1a' }}>R$ {d.total.toLocaleString('pt-BR')}</td>
-                  <td style={{ padding: '12px 20px' }}>
-                    <span style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, fontWeight: 600, background: pctMeta >= 100 ? '#e6f4ea' : '#fce8e6', color: pctMeta >= 100 ? '#0d7a3e' : '#ea4335' }}>
-                      {pctMeta}%
+
+        {/* Gráficos */}
+        <div className="two-col" style={{ marginBottom: 20 }}>
+
+          {/* Barras */}
+          <div style={{
+            background: '#fff', borderRadius: 'var(--radius)',
+            padding: '24px', border: '1px solid var(--border)',
+            boxShadow: 'var(--shadow-sm)',
+          }}>
+            <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>Receita mensal</h2>
+            <p style={{ fontSize: 12, color: 'var(--text-2)', marginBottom: 20 }}>Total por mês — linha de meta</p>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 180, position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                bottom: Math.round((metaMensal / maxTotal) * 160) + 20,
+                left: 0, right: 0,
+                borderTop: '2px dashed #ea4335',
+                display: 'flex', alignItems: 'center',
+              }}>
+                <span style={{ fontSize: 10, color: '#ea4335', background: '#fff', padding: '0 4px', marginLeft: 4, fontWeight: 600 }}>
+                  Meta R${(metaMensal/1000).toFixed(1)}k
+                </span>
+              </div>
+              {dados.map((d, i) => {
+                const isLast = i === dados.length - 1
+                const hTotal = Math.round((d.total / maxTotal) * 160)
+                return (
+                  <div key={d.mes} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                    <div style={{ fontSize: 10, color: isLast ? '#082996' : 'var(--text-3)', fontWeight: 700 }}>
+                      R${(d.total/1000).toFixed(1)}k
+                    </div>
+                    <div style={{
+                      width: '100%', height: hTotal,
+                      background: isLast
+                        ? 'linear-gradient(to top, #082996, #1a3fbe)'
+                        : '#dbe4ff',
+                      borderRadius: '5px 5px 0 0',
+                      transition: 'height 0.5s ease',
+                      border: d.total >= metaMensal ? '2px solid #34a853' : 'none',
+                      boxSizing: 'border-box',
+                    }} />
+                    <div style={{ fontSize: 10, color: isLast ? '#082996' : 'var(--text-3)', fontWeight: isLast ? 700 : 400 }}>
+                      {d.mes.split('/')[0]}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Composição */}
+          <div style={{
+            background: '#fff', borderRadius: 'var(--radius)',
+            padding: '24px', border: '1px solid var(--border)',
+            boxShadow: 'var(--shadow-sm)',
+          }}>
+            <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>Composição da receita</h2>
+            <p style={{ fontSize: 12, color: 'var(--text-2)', marginBottom: 20 }}>Mensalista vs Avulso por mês</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {dados.map((d, i) => {
+                const isLast = i === dados.length - 1
+                const pctMensal = Math.round((d.mensal / d.total) * 100)
+                const pctAvulso = 100 - pctMensal
+                return (
+                  <div key={d.mes} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ fontSize: 11, color: isLast ? '#082996' : 'var(--text-3)', width: 42, flexShrink: 0, fontWeight: isLast ? 700 : 400 }}>
+                      {d.mes.split('/')[0]}
                     </span>
-                  </td>
-                  <td style={{ padding: '12px 20px', fontSize: 18, color: tendColor }}>{tend}</td>
+                    <div style={{ flex: 1, height: 22, borderRadius: 5, overflow: 'hidden', display: 'flex' }}>
+                      <div style={{
+                        width: `${pctMensal}%`,
+                        background: isLast ? '#082996' : '#dbe4ff',
+                        transition: 'width 0.5s ease',
+                        display: 'flex', alignItems: 'center', paddingLeft: 6,
+                      }}>
+                        {pctMensal > 20 && <span style={{ fontSize: 10, color: isLast ? '#fff' : '#082996', fontWeight: 700 }}>{pctMensal}%</span>}
+                      </div>
+                      <div style={{
+                        flex: 1,
+                        background: isLast ? '#34a853' : '#bbf7d0',
+                        display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 6,
+                      }}>
+                        {pctAvulso > 10 && <span style={{ fontSize: 10, color: isLast ? '#fff' : '#0d7a3e', fontWeight: 700 }}>{pctAvulso}%</span>}
+                      </div>
+                    </div>
+                    <span style={{ fontSize: 11, color: isLast ? '#082996' : 'var(--text-3)', fontWeight: isLast ? 700 : 400, width: 48, textAlign: 'right', flexShrink: 0 }}>
+                      R${(d.total/1000).toFixed(1)}k
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+            <div style={{ display: 'flex', gap: 16, marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--border-light)' }}>
+              {[['#082996','Mensalista'],['#34a853','Avulso']].map(([cor,label]) => (
+                <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 3, background: cor }} />
+                  <span style={{ fontSize: 12, color: 'var(--text-2)' }}>{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Tabela */}
+        <div style={{
+          background: '#fff', borderRadius: 'var(--radius)',
+          border: '1px solid var(--border)', overflow: 'hidden',
+          boxShadow: 'var(--shadow-sm)',
+        }}>
+          <div style={{ padding: '18px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>Detalhamento mensal</h2>
+            <span style={{ fontSize: 12, color: 'var(--text-3)' }}>Últimos {periodo} {periodo === 1 ? 'mês' : 'meses'}</span>
+          </div>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: '#fafbfc' }}>
+                  {['Mês', 'Mensalista', 'Avulso', 'Total', 'vs Meta', 'Tendência'].map(h => (
+                    <th key={h} style={{
+                      padding: '12px 20px', textAlign: 'left',
+                      fontSize: 11, fontWeight: 600, color: 'var(--text-2)',
+                      borderBottom: '1px solid var(--border)',
+                      textTransform: 'uppercase', letterSpacing: '0.05em',
+                      whiteSpace: 'nowrap',
+                    }}>{h}</th>
+                  ))}
                 </tr>
-              )
-            })}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {dados.map((d, i) => {
+                  const isLast = i === dados.length - 1
+                  const pctMeta = Math.round((d.total / metaMensal) * 100)
+                  const prev = dados[i - 1]
+                  const tend = prev ? (d.total >= prev.total ? '↑' : '↓') : '—'
+                  const tendColor = prev ? (d.total >= prev.total ? '#0d7a3e' : '#ea4335') : 'var(--text-3)'
+                  return (
+                    <tr key={d.mes} style={{
+                      borderBottom: '1px solid var(--border-light)',
+                      background: isLast ? '#f0f4ff' : 'transparent',
+                    }}>
+                      <td style={{ padding: '13px 20px', fontSize: 14, fontWeight: isLast ? 700 : 500, color: isLast ? '#082996' : 'var(--text)' }}>{d.mes}</td>
+                      <td style={{ padding: '13px 20px', fontSize: 13, color: 'var(--text)' }}>R$ {d.mensal.toLocaleString('pt-BR')}</td>
+                      <td style={{ padding: '13px 20px', fontSize: 13, color: 'var(--text)' }}>R$ {d.avulso.toLocaleString('pt-BR')}</td>
+                      <td style={{ padding: '13px 20px', fontSize: 14, fontWeight: 700, color: isLast ? '#082996' : 'var(--text)' }}>R$ {d.total.toLocaleString('pt-BR')}</td>
+                      <td style={{ padding: '13px 20px' }}>
+                        <span style={{
+                          fontSize: 11, padding: '3px 10px', borderRadius: 20, fontWeight: 600,
+                          background: pctMeta >= 100 ? '#e6f4ea' : '#fce8e6',
+                          color: pctMeta >= 100 ? '#0d7a3e' : '#ea4335',
+                        }}>{pctMeta}%</span>
+                      </td>
+                      <td style={{ padding: '13px 20px', fontSize: 18, fontWeight: 600, color: tendColor }}>{tend}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   )
