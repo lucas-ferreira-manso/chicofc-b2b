@@ -1,22 +1,5 @@
 import { useState } from 'react'
-import { QUADRAS, HORARIOS, DIAS, CORES, CONFIG } from '../data'
-
-const AGENDA_INICIAL = (() => {
-  const a = {}
-  QUADRAS.forEach(q => { a[q.id] = {}; DIAS.forEach(d => { a[q.id][d] = {}; HORARIOS.forEach(h => { a[q.id][d][h] = null }) }) })
-  const slots = [
-    { q:'society', d:'Segunda', h:'20h00', nome:'Fut Raiz',       cor:'#082996', tipo:'mensal' },
-    { q:'society', d:'Terça',   h:'21h00', nome:'Terça Pesada',   cor:'#7c3aed', tipo:'mensal' },
-    { q:'society', d:'Quarta',  h:'19h00', nome:'Os Crias',       cor:'#b45309', tipo:'mensal' },
-    { q:'society', d:'Quarta',  h:'21h00', nome:'ChicoFC',        cor:'#082996', tipo:'mensal' },
-    { q:'society', d:'Quinta',  h:'20h00', nome:'Quinta FC',      cor:'#0891b2', tipo:'mensal' },
-    { q:'society', d:'Sexta',   h:'21h00', nome:'Pelada do Beto', cor:'#ea4335', tipo:'mensal' },
-    { q:'society', d:'Sábado',  h:'19h00', nome:'Boleiros SC',    cor:'#34a853', tipo:'mensal' },
-    { q:'volei1',  d:'Sábado',  h:'20h00', nome:'Sábado Bom',     cor:'#9aa0a6', tipo:'mensal', espera:true },
-  ]
-  slots.forEach(s => { if(a[s.q]?.[s.d]) a[s.q][s.d][s.h] = { grupo:s.nome, cor:s.cor, tipo:s.tipo, espera:s.espera||false } })
-  return a
-})()
+import { QUADRAS, HORARIOS, DIAS, CORES, CONFIG, AGENDA_INICIAL } from '../data'
 
 export default function Agenda() {
   const [quadraId, setQuadraId] = useState('society')
