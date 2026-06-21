@@ -146,87 +146,24 @@ export default function Financeiro() {
           </div>
         </div>
 
-        <div className="dash-layout">
-          {/* Coluna esquerda */}
-          <div style={{ minWidth: 0 }}>
-            {/* Lista grupos */}
-            <div style={{
-              background: '#fff', borderRadius: 'var(--radius)',
-              padding: '20px 24px', border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)',
-            }}>
-              <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 16 }}>Detalhamento por grupo</h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {gruposAtivos.map(g => (
-                  <GrupoItem key={g.id} grupo={g}
-                    onTogglePago={togglePago}
-                    onCobrar={cobrar}
-                    onEditar={(g) => setModalGrupo(g)}
-                    onExcluir={handleExcluir}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>{/* fim coluna esquerda */}
-
-          {/* Painel direito */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {/* Resumo cobranças */}
-            <div style={{
-              background: 'linear-gradient(135deg, #082996 0%, #1a3fbe 100%)',
-              borderRadius: 'var(--radius)', padding: '22px',
-              boxShadow: '0 4px 20px rgba(8,41,150,0.25)',
-            }}>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginBottom: 4 }}>Total esperado</div>
-              <div style={{ fontSize: 32, fontWeight: 800, color: '#fff', lineHeight: 1, marginBottom: 4 }}>
-                R$ {totalEsperado.toLocaleString('pt-BR')}
-              </div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 18 }}>Maio de 2025</div>
-              <div style={{ height: 6, background: 'rgba(255,255,255,0.2)', borderRadius: 3, overflow: 'hidden', marginBottom: 10 }}>
-                <div style={{ height: '100%', width: `${pct}%`, background: '#66d1ff', borderRadius: 3 }} />
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>Recebido: R$ {totalRecebido.toLocaleString('pt-BR')}</span>
-                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', fontWeight: 700 }}>{pct}%</span>
-              </div>
-            </div>
-
-            {/* Pendentes */}
-            <div style={{
-              background: '#fff', borderRadius: 'var(--radius)',
-              padding: '20px 22px', border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)',
-            }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 14 }}>
-                A receber
-                <span style={{ marginLeft: 8, fontSize: 11, background: '#fce8e6', color: '#ea4335', padding: '2px 8px', borderRadius: 20, fontWeight: 700 }}>
-                  {grupos.filter(g => !g.pago && g.status === 'ativo').length}
-                </span>
-              </div>
-              {grupos.filter(g => !g.pago && g.status === 'ativo').map(g => (
-                <div key={g.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: '1px solid var(--border-light)' }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{g.nome}</div>
-                    <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{g.dia} · {g.horario}</div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#ea4335' }}>R$ {g.valor}</div>
-                    <button onClick={() => cobrar(g.id)}
-                      style={{ fontSize: 10, background: '#fce8e6', color: '#ea4335', border: 'none', borderRadius: 5, padding: '2px 8px', cursor: 'pointer', fontWeight: 600, marginTop: 2 }}>
-                      Cobrar
-                    </button>
-                  </div>
-                </div>
-              ))}
-              {grupos.filter(g => !g.pago && g.status === 'ativo').length === 0 && (
-                <div style={{ fontSize: 13, color: '#0d7a3e', fontWeight: 600, textAlign: 'center', padding: '16px 0' }}>
-                  Todos pagos! ✅
-                </div>
-              )}
-            </div>
-
+        {/* Lista grupos */}
+        <div style={{
+          background: '#fff', borderRadius: 'var(--radius)',
+          padding: '20px 24px', border: '1px solid var(--border)',
+          boxShadow: 'var(--shadow-sm)',
+        }}>
+          <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 16 }}>Detalhamento por grupo</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {gruposAtivos.map(g => (
+              <GrupoItem key={g.id} grupo={g}
+                onTogglePago={togglePago}
+                onCobrar={cobrar}
+                onEditar={(g) => setModalGrupo(g)}
+                onExcluir={handleExcluir}
+              />
+            ))}
           </div>
-        </div>{/* fim dash-layout */}
+        </div>
       </div>
     </div>
   )
