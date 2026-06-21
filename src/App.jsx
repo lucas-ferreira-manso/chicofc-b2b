@@ -10,7 +10,7 @@ export default function App() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar />
-      <main style={{ flex: 1, minWidth: 0, overflowY: 'auto', background: 'var(--bg)' }}>
+      <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflowY: 'auto', background: 'var(--bg)', width: 0 }}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/agenda" element={<Agenda />} />
