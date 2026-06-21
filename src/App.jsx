@@ -8,7 +8,7 @@ import Relatorios from './pages/Relatorios'
 
 export default function App() {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
       <Sidebar />
       <main style={{ flex: 1, minWidth: 0, overflowY: 'auto', background: 'var(--bg)' }}>
         <Routes>
