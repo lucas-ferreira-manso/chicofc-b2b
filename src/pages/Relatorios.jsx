@@ -74,8 +74,18 @@ export default function Relatorios() {
             <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 3 }}>Relatórios</h1>
             <p style={{ fontSize: 13, color: 'var(--text-2)' }}>Análise financeira da 9E10</p>
           </div>
-          <div style={{ fontSize: 12, color: 'var(--text-3)', background: '#fff', padding: '8px 14px', borderRadius: 9, border: '1px solid var(--border)' }}>
-            Últimos {periodo} {periodo === 1 ? 'mês' : 'meses'}
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <div style={{ fontSize: 12, color: 'var(--text-3)', background: '#fff', padding: '8px 14px', borderRadius: 9, border: '1px solid var(--border)' }}>
+              Últimos {periodo} {periodo === 1 ? 'mês' : 'meses'}
+            </div>
+            <button onClick={() => exportRelatorio('html')}
+              style={{ padding: '9px 16px', borderRadius: 9, background: '#fff', color: '#082996', border: '1.5px solid var(--border)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+              🌐 HTML
+            </button>
+            <button onClick={() => exportRelatorio('txt')}
+              style={{ padding: '9px 16px', borderRadius: 9, background: 'var(--blue)', color: '#fff', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 14px rgba(8,41,150,0.3)' }}>
+              📄 TXT
+            </button>
           </div>
         </div>
 
@@ -363,24 +373,6 @@ export default function Relatorios() {
               </div>
             </div>
 
-            {/* Exportar */}
-            <div style={{
-              background: '#fff', borderRadius: 'var(--radius)',
-              padding: '20px 22px', border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)',
-            }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 14 }}>Exportar relatório</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <button onClick={() => exportRelatorio('html')}
-                  style={{ width: '100%', padding: '10px', borderRadius: 9, background: '#e8f0ff', color: '#082996', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                  🌐 Exportar HTML
-                </button>
-                <button onClick={() => exportRelatorio('txt')}
-                  style={{ width: '100%', padding: '10px', borderRadius: 9, background: 'var(--blue)', color: '#fff', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 14px rgba(8,41,150,0.3)' }}>
-                  📄 Exportar TXT
-                </button>
-              </div>
-            </div>
           </div>
         </div>{/* fim dash-layout */}
       </div>
