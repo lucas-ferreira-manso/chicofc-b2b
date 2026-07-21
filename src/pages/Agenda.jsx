@@ -1,12 +1,15 @@
 import { useState } from 'react'
-import { QUADRAS, HORARIOS, DIAS, CORES, CONFIG, AGENDA_INICIAL } from '../data'
+import { QUADRAS, HORARIOS, DIAS, CONFIG, AGENDA_INICIAL } from '../data'
 import { Plus, SoccerBall, TrashSimple } from '@phosphor-icons/react'
+
+// Cor com função: comunica o tipo de locação do horário, não uma escolha arbitrária.
+const corDoSlot = (slot) => slot.espera ? 'var(--text-3)' : slot.tipo === 'avulso' ? 'var(--yellow)' : 'var(--blue)'
 
 export default function Agenda() {
   const [quadraId, setQuadraId] = useState('society')
   const [agenda, setAgenda] = useState(AGENDA_INICIAL)
   const [modal, setModal] = useState(null)
-  const [form, setForm] = useState({ grupo: '', tipo: 'mensal', cor: CORES[0] })
+  const [form, setForm] = useState({ grupo: '', tipo: 'mensal' })
   const [confirmRemove, setConfirmRemove] = useState(null)
 
   const quadraAtual = QUADRAS.find(q => q.id === quadraId)
@@ -20,7 +23,7 @@ export default function Agenda() {
     if (!form.grupo.trim()) return
     setAgenda(prev => ({
       ...prev,
-      [modal.quadra]: { ...prev[modal.quadra], [modal.dia]: { ...prev[modal.quadra][modal.dia], [modal.horario]: { grupo: form.grupo, cor: form.cor, tipo: form.tipo } } }
+      [modal.quadra]: { ...prev[modal.quadra], [modal.dia]: { ...prev[modal.quadra][modal.dia], [modal.horario]: { grupo: form.grupo, tipo: form.tipo } } }
     }))
     setModal(null)
   }
@@ -131,7 +134,7 @@ export default function Agenda() {
                           <div key={dia}
                             onClick={() => {
                               if (slot) { setModal({ quadra: quadraId, dia, horario: h, slot }) }
-                              else { setForm({ grupo: '', tipo: 'mensal', cor: CORES[0] }); setModal({ quadra: quadraId, dia, horario: h, slot: null }) }
+                              else { setForm({ grupo: '', tipo: 'mensal' }); setModal({ quadra: quadraId, dia, horario: h, slot: null }) }
                             }}
                             style={{
                               padding: '6px 4px', cursor: 'pointer',
@@ -146,9 +149,9 @@ export default function Agenda() {
                               </div>
                             ) : (
                               <div style={{ textAlign: 'center', padding: '2px 3px' }}>
-                                <div style={{ width: 8, height: 8, borderRadius: '50%', background: slot.cor, margin: '0 auto 3px' }} />
+                                <div style={{ width: 8, height: 8, borderRadius: '50%', background: corDoSlot(slot), margin: '0 auto 3px' }} />
                                 <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text)', lineHeight: 1.2 }}>{slot.grupo}</div>
-                                <div style={{ fontSize: 9, color: slot.tipo === 'mensal' ? 'var(--blue)' : 'var(--yellow)', marginTop: 1, fontWeight: 500 }}>{tipoLabel[slot.tipo]}</div>
+                                <div style={{ fontSize: 9, color: corDoSlot(slot), marginTop: 1, fontWeight: 500 }}>{slot.espera ? 'Espera' : tipoLabel[slot.tipo]}</div>
                               </div>
                             )}
                           </div>
@@ -275,19 +278,6 @@ export default function Agenda() {
                   ))}
                 </div>
               </div>
-              <div>
-                <label className="field-label">Cor</label>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  {CORES.map(c => (
-                    <div key={c} onClick={() => setForm(f => ({ ...f, cor: c }))}
-                      style={{
-                        width: 28, height: 28, borderRadius: '50%', background: c, cursor: 'pointer',
-                        border: `3px solid ${form.cor === c ? 'var(--text)' : 'transparent'}`,
-                        boxShadow: form.cor === c ? `0 0 0 2px #fff, 0 0 0 4px ${c}` : 'none',
-                      }} />
-                  ))}
-                </div>
-              </div>
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
               <button onClick={() => setModal(null)} className="btn btn-secondary" style={{ flex: 1 }}>
@@ -307,10 +297,10 @@ export default function Agenda() {
           <div className="modal-panel" style={{ padding: 28, maxWidth: 360 }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
               <div className="icon-tile" style={{
-                width: 46, height: 46, borderRadius: 13,
-                background: `color-mix(in srgb, ${modal.slot.cor} 14%, white)`,
+                width: 46, height: 46, borderRadius: 'var(--radius-sm)',
+                background: `color-mix(in srgb, ${corDoSlot(modal.slot)} 14%, white)`,
               }}>
-                <SoccerBall size={22} weight="regular" color={modal.slot.cor} />
+                <SoccerBall size={22} weight="regular" color={corDoSlot(modal.slot)} />
               </div>
               <div>
                 <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>{modal.slot.grupo}</div>
@@ -340,7 +330,7 @@ export default function Agenda() {
       {confirmRemove && (
         <div className="modal-overlay">
           <div className="modal-panel" style={{ padding: 28, maxWidth: 340 }}>
-            <div className="icon-tile" style={{ width: 48, height: 48, borderRadius: 13, background: 'var(--red-bg)', marginBottom: 16 }}>
+            <div className="icon-tile" style={{ width: 48, height: 48, borderRadius: 'var(--radius-sm)', background: 'var(--red-bg)', marginBottom: 16 }}>
               <TrashSimple size={22} weight="regular" color="var(--red)" />
             </div>
             <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>Remover horário?</h3>

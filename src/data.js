@@ -22,6 +22,12 @@ export const CONFIG = {
   metaAnual: 96000,
 }
 
+// Identidade da quadra/cliente que está usando o painel — troque aqui ao configurar um novo cliente.
+export const VENUE = {
+  nome: '9E10',
+  cidade: 'Florianópolis, SC',
+}
+
 export const GRUPOS_INICIAL = [
   { id: 1, nome: 'ChicoFC',        dia: 'Quarta',  horario: '21h00', quadra: 'society', jogadores: 14, tipo: 'mensal', valor: 760, status: 'ativo',  pago: true,  responsavel: '5548999990001' },
   { id: 2, nome: 'Fut Raiz',       dia: 'Segunda', horario: '20h00', quadra: 'society', jogadores: 14, tipo: 'mensal', valor: 760, status: 'ativo',  pago: true,  responsavel: '5548999990002' },
@@ -43,18 +49,18 @@ function buildAgendaInicial() {
     })
   })
   const slots = [
-    { quadra: 'society', dia: 'Segunda', h: '20h00', nome: 'Fut Raiz',       cor: '#082996', tipo: 'mensal' },
-    { quadra: 'society', dia: 'Terça',   h: '21h00', nome: 'Terça Pesada',   cor: '#7c3aed', tipo: 'mensal' },
-    { quadra: 'society', dia: 'Quarta',  h: '19h00', nome: 'Os Crias',       cor: '#b45309', tipo: 'mensal' },
-    { quadra: 'society', dia: 'Quarta',  h: '21h00', nome: 'ChicoFC',        cor: '#082996', tipo: 'mensal' },
-    { quadra: 'society', dia: 'Quinta',  h: '20h00', nome: 'Quinta FC',      cor: '#0891b2', tipo: 'mensal' },
-    { quadra: 'society', dia: 'Sexta',   h: '21h00', nome: 'Pelada do Beto', cor: '#ea4335', tipo: 'mensal' },
-    { quadra: 'society', dia: 'Sábado',  h: '19h00', nome: 'Boleiros SC',    cor: '#34a853', tipo: 'mensal' },
-    { quadra: 'volei1',  dia: 'Sábado',  h: '20h00', nome: 'Sábado Bom',     cor: '#9aa0a6', tipo: 'mensal', espera: true },
+    { quadra: 'society', dia: 'Segunda', h: '20h00', nome: 'Fut Raiz',       tipo: 'mensal' },
+    { quadra: 'society', dia: 'Terça',   h: '21h00', nome: 'Terça Pesada',   tipo: 'mensal' },
+    { quadra: 'society', dia: 'Quarta',  h: '19h00', nome: 'Os Crias',       tipo: 'mensal' },
+    { quadra: 'society', dia: 'Quarta',  h: '21h00', nome: 'ChicoFC',        tipo: 'mensal' },
+    { quadra: 'society', dia: 'Quinta',  h: '20h00', nome: 'Quinta FC',      tipo: 'mensal' },
+    { quadra: 'society', dia: 'Sexta',   h: '21h00', nome: 'Pelada do Beto', tipo: 'mensal' },
+    { quadra: 'society', dia: 'Sábado',  h: '19h00', nome: 'Boleiros SC',    tipo: 'mensal' },
+    { quadra: 'volei1',  dia: 'Sábado',  h: '20h00', nome: 'Sábado Bom',     tipo: 'mensal', espera: true },
   ]
   slots.forEach(s => {
     if (agenda[s.quadra] && agenda[s.quadra][s.dia]) {
-      agenda[s.quadra][s.dia][s.h] = { grupo: s.nome, cor: s.cor, tipo: s.tipo, espera: s.espera || false }
+      agenda[s.quadra][s.dia][s.h] = { grupo: s.nome, tipo: s.tipo, espera: s.espera || false }
     }
   })
   return agenda
@@ -83,5 +89,3 @@ export const NOTIFICACOES = [
   { id: 3, msg: 'Os Crias ainda não pagou maio',       tempo: '1d', urgente: true  },
   { id: 4, msg: 'ChicoFC: todos 14 confirmados para quarta', tempo: '1d', urgente: false },
 ]
-
-export const CORES = ['#082996', '#0d7a3e', '#b45309', '#7c3aed', '#0891b2', '#ea4335', '#34a853']

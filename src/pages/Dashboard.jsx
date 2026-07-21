@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NOTIFICACOES, HISTORICO_MENSAL, CONFIG } from '../data'
+import { NOTIFICACOES, HISTORICO_MENSAL, CONFIG, VENUE } from '../data'
 import GrupoItem from '../components/GrupoItem'
 import GrupoModal from '../components/GrupoModal'
 import { useGrupos } from '../components/useGrupos'
@@ -63,28 +63,28 @@ export default function Dashboard() {
       label: 'Recebido',
       value: `R$ ${totalRecebido.toLocaleString('pt-BR')}`,
       sub: `${grupos.filter(g => g.pago && g.status === 'ativo').length} grupos pagos`,
-      color: 'var(--green-dark)', bg: 'var(--green-bg)', Icon: HandCoins,
+      color: 'var(--green-dark)', Icon: HandCoins,
       pct: Math.round((totalRecebido / totalEsperado) * 100),
     },
     {
       label: 'Pendente',
       value: `R$ ${totalPendente.toLocaleString('pt-BR')}`,
       sub: `${grupos.filter(g => !g.pago && g.status === 'ativo').length} grupos`,
-      color: 'var(--red)', bg: 'var(--red-bg)', Icon: HourglassMedium,
+      color: 'var(--red)', Icon: HourglassMedium,
       pct: Math.round((totalPendente / totalEsperado) * 100),
     },
     {
       label: 'Grupos ativos',
       value: gruposAtivos.length,
       sub: `Potencial R$ ${totalEsperado.toLocaleString('pt-BR')}/mês`,
-      color: 'var(--blue)', bg: 'var(--accent)', Icon: SoccerBall,
+      color: 'var(--text)', Icon: SoccerBall,
       pct: null,
     },
     {
       label: 'Ocupação',
       value: `${Math.round((gruposAtivos.filter(g=>g.quadra==='society').length / 24) * 100)}%`,
       sub: `${gruposAtivos.filter(g=>g.quadra==='society').length} de 24 horários`,
-      color: 'var(--yellow)', bg: 'var(--yellow-bg)', Icon: ChartPieSlice,
+      color: 'var(--text)', barColor: 'var(--blue)', Icon: ChartPieSlice,
       pct: Math.round((gruposAtivos.filter(g=>g.quadra==='society').length / 24) * 100),
     },
   ]
@@ -103,7 +103,7 @@ export default function Dashboard() {
         {/* Header */}
         <div className="page-header">
           <div>
-            <h1 className="page-title">Bom dia, 9E10 👋</h1>
+            <h1 className="page-title">Bom dia, {VENUE.nome} 👋</h1>
             <p className="page-subtitle">Maio de 2025 · Semana em andamento</p>
           </div>
           <button onClick={() => setModalGrupo({})} className="btn btn-primary">
@@ -111,19 +111,19 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Two-column layout */}
-        <div className="dash-layout">
+        {/* Hero + Meta mensal row (equal height) */}
+        <div className="dash-layout" style={{ alignItems: 'stretch', marginBottom: 20 }}>
 
-          {/* LEFT COLUMN */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-
-            {/* Hero card */}
-            <div style={{
-              background: 'linear-gradient(120deg, var(--blue) 0%, var(--blue-mid) 100%)',
-              borderRadius: 'var(--radius)',
-              padding: '26px 28px',
-              color: '#fff',
-            }}>
+          {/* Hero card */}
+          <div style={{
+            background: 'linear-gradient(120deg, var(--blue) 0%, var(--blue-mid) 100%)',
+            borderRadius: 'var(--radius)',
+            padding: '26px 28px',
+            color: '#fff',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <div>
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginBottom: 9, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
@@ -171,6 +171,65 @@ export default function Dashboard() {
               </div>
             </div>
 
+          {/* Meta mensal */}
+          <div className="card card-pad" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                <h2 className="section-title">Meta mensal</h2>
+                <button onClick={() => setEditandoMeta(e => !e)} className="btn btn-ghost btn-sm" style={{ padding: '5px 10px', gap: 5 }}>
+                  <PencilSimple size={13} weight="regular" /> {editandoMeta ? 'Salvar' : 'Editar'}
+                </button>
+              </div>
+
+              {editandoMeta ? (
+                <div style={{ marginBottom: 14 }}>
+                  <label className="field-label">Meta anual (R$)</label>
+                  <input type="number" value={metaInput} onChange={e => setMetaInput(+e.target.value)}
+                    className="input" style={{ borderColor: 'var(--blue)' }} />
+                  <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 6 }}>Mensal: R$ {metaMensalCalc.toLocaleString('pt-BR')}</p>
+                </div>
+              ) : (
+                <>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 9 }}>
+                    <span style={{ fontSize: 28, fontWeight: 700, color: 'var(--blue)', letterSpacing: '-0.02em' }}>{pctMeta}%</span>
+                    <span style={{ fontSize: 12, color: 'var(--text-2)' }}>
+                      R$ {totalRecebido.toLocaleString('pt-BR')} / R$ {metaMensalCalc.toLocaleString('pt-BR')}
+                    </span>
+                  </div>
+                  <div className="progress-track" style={{ marginBottom: 12 }}>
+                    <div className="progress-bar" style={{
+                      width: `${pctMeta}%`,
+                      background: pctMeta >= 100 ? 'var(--green)' : 'var(--blue)',
+                    }} />
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div style={{
+              marginTop: 'auto',
+              padding: '11px 14px', borderRadius: 'var(--radius-sm)',
+              background: falta > 0 ? 'var(--red-bg)' : 'var(--green-bg)',
+              display: 'flex', alignItems: 'center', gap: 9,
+            }}>
+              {falta > 0
+                ? <WarningCircle size={17} weight="regular" color="var(--red)" />
+                : <CheckCircle size={17} weight="regular" color="var(--green-dark)" />}
+              <span style={{ fontSize: 12, color: falta > 0 ? 'var(--red)' : 'var(--green-dark)', fontWeight: 500 }}>
+                {falta > 0
+                  ? `Faltam R$ ${falta.toLocaleString('pt-BR')} para a meta`
+                  : 'Meta do mês atingida!'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Two-column layout */}
+        <div className="dash-layout">
+
+          {/* LEFT COLUMN */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
             {/* KPI cards */}
             <div className="kpi-grid">
               {kpis.map(c => (
@@ -178,13 +237,13 @@ export default function Dashboard() {
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
                     <div>
                       <div className="eyebrow" style={{ marginBottom: 7 }}>{c.label}</div>
-                      <div style={{ fontSize: 23, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>{c.value}</div>
+                      <div style={{ fontSize: 23, fontWeight: 700, color: c.color, lineHeight: 1 }}>{c.value}</div>
                     </div>
                     <c.Icon size={20} weight="regular" color="var(--text-3)" />
                   </div>
                   {c.pct !== null && (
                     <div className="progress-track" style={{ height: 4, marginBottom: 9 }}>
-                      <div className="progress-bar" style={{ width: `${c.pct}%`, background: c.color }} />
+                      <div className="progress-bar" style={{ width: `${c.pct}%`, background: c.barColor || c.color }} />
                     </div>
                   )}
                   <div style={{ fontSize: 11.5, color: 'var(--text-3)' }}>{c.sub}</div>
@@ -271,55 +330,6 @@ export default function Dashboard() {
 
           {/* RIGHT PANEL */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-
-            {/* Meta mensal */}
-            <div className="card card-pad">
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                <h2 className="section-title">Meta mensal</h2>
-                <button onClick={() => setEditandoMeta(e => !e)} className="btn btn-ghost btn-sm" style={{ padding: '5px 10px', gap: 5 }}>
-                  <PencilSimple size={13} weight="regular" /> {editandoMeta ? 'Salvar' : 'Editar'}
-                </button>
-              </div>
-
-              {editandoMeta ? (
-                <div style={{ marginBottom: 14 }}>
-                  <label className="field-label">Meta anual (R$)</label>
-                  <input type="number" value={metaInput} onChange={e => setMetaInput(+e.target.value)}
-                    className="input" style={{ borderColor: 'var(--blue)' }} />
-                  <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 6 }}>Mensal: R$ {metaMensalCalc.toLocaleString('pt-BR')}</p>
-                </div>
-              ) : (
-                <>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 9 }}>
-                    <span style={{ fontSize: 28, fontWeight: 700, color: 'var(--blue)', letterSpacing: '-0.02em' }}>{pctMeta}%</span>
-                    <span style={{ fontSize: 12, color: 'var(--text-2)' }}>
-                      R$ {totalRecebido.toLocaleString('pt-BR')} / R$ {metaMensalCalc.toLocaleString('pt-BR')}
-                    </span>
-                  </div>
-                  <div className="progress-track" style={{ marginBottom: 12 }}>
-                    <div className="progress-bar" style={{
-                      width: `${pctMeta}%`,
-                      background: pctMeta >= 100 ? 'var(--green)' : 'var(--blue)',
-                    }} />
-                  </div>
-                </>
-              )}
-
-              <div style={{
-                padding: '11px 14px', borderRadius: 'var(--radius-sm)',
-                background: falta > 0 ? 'var(--red-bg)' : 'var(--green-bg)',
-                display: 'flex', alignItems: 'center', gap: 9,
-              }}>
-                {falta > 0
-                  ? <WarningCircle size={17} weight="regular" color="var(--red)" />
-                  : <CheckCircle size={17} weight="regular" color="var(--green-dark)" />}
-                <span style={{ fontSize: 12, color: falta > 0 ? 'var(--red)' : 'var(--green-dark)', fontWeight: 500 }}>
-                  {falta > 0
-                    ? `Faltam R$ ${falta.toLocaleString('pt-BR')} para a meta`
-                    : 'Meta do mês atingida!'}
-                </span>
-              </div>
-            </div>
 
             {/* Notificações */}
             <div className="card card-pad">

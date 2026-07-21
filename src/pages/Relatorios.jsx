@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { HISTORICO_MENSAL, CONFIG } from '../data'
+import { HISTORICO_MENSAL, CONFIG, VENUE } from '../data'
 import { useGrupos } from '../components/useGrupos'
 import { HandCoins, CalendarBlank, Lightning, TrendUp, TrendDown, Globe, FileText } from '@phosphor-icons/react'
 
@@ -30,7 +30,7 @@ export default function Relatorios() {
           <td style="font-weight:600">R$ ${d.total.toLocaleString('pt-BR')}</td>
           <td style="color:${d.total>=metaMensal?'#0f7a38':'#dc2626'}">${Math.round((d.total/metaMensal)*100)}%</td>
         </tr>`).join('')
-      const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Relatório 9E10</title>
+      const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Relatório ${VENUE.nome}</title>
       <style>body{font-family:system-ui,sans-serif;max-width:860px;margin:40px auto;padding:0 20px;color:#1a1a1a}
       h1{font-size:26px;margin:0}p{color:#6b7280;margin-top:4px}
       .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}
@@ -40,7 +40,7 @@ export default function Relatorios() {
       td{padding:12px;border-bottom:1px solid #f0f1f4;font-size:14px}
       footer{margin-top:40px;font-size:12px;color:#9aa1ac;text-align:center;padding-top:20px;border-top:1px solid #f0f1f4}
       </style></head><body>
-      <h1>Relatório Financeiro — 9E10</h1>
+      <h1>Relatório Financeiro — ${VENUE.nome}</h1>
       <p>${periodo_str} · Gerado em ${new Date().toLocaleDateString('pt-BR')}</p>
       <div class="grid">
         <div class="card"><div class="cl">Receita total</div><div class="cv" style="color:#0b2a7a">R$ ${totalPeriodo.toLocaleString('pt-BR')}</div></div>
@@ -54,23 +54,23 @@ export default function Relatorios() {
       </body></html>`
       const blob = new Blob([html], { type: 'text/html' })
       const url = URL.createObjectURL(blob)
-      const a = document.createElement('a'); a.href = url; a.download = `relatorio-9E10-${periodo}m.html`; a.click()
+      const a = document.createElement('a'); a.href = url; a.download = `relatorio-${VENUE.nome}-${periodo}m.html`; a.click()
     } else {
       const linhas = dados.map(d =>
         `${d.mes}   Mensal: R$${d.mensal.toLocaleString('pt-BR').padStart(8)}   Avulso: R$${d.avulso.toLocaleString('pt-BR').padStart(6)}   Total: R$${d.total.toLocaleString('pt-BR').padStart(8)}   ${Math.round((d.total/metaMensal)*100)}% da meta`
       ).join('\n')
-      const txt = `RELATÓRIO FINANCEIRO — 9E10\n${periodo_str}\nGerado em: ${new Date().toLocaleDateString('pt-BR')}\n${'─'.repeat(70)}\n\nResumo\nReceita total: R$ ${totalPeriodo.toLocaleString('pt-BR')}\nMensalistas:   R$ ${totalMensal.toLocaleString('pt-BR')}\nAvulsos:       R$ ${totalAvulso.toLocaleString('pt-BR')}\nCrescimento:   ${crescimento>=0?'+':''}${crescimento}%\n\n${'─'.repeat(70)}\n\n${linhas}\n\n${'─'.repeat(70)}\nMeta mensal: R$ ${metaMensal.toLocaleString('pt-BR')}\nChicoFC · Sistema de Gestão de Quadras`
+      const txt = `RELATÓRIO FINANCEIRO — ${VENUE.nome}\n${periodo_str}\nGerado em: ${new Date().toLocaleDateString('pt-BR')}\n${'─'.repeat(70)}\n\nResumo\nReceita total: R$ ${totalPeriodo.toLocaleString('pt-BR')}\nMensalistas:   R$ ${totalMensal.toLocaleString('pt-BR')}\nAvulsos:       R$ ${totalAvulso.toLocaleString('pt-BR')}\nCrescimento:   ${crescimento>=0?'+':''}${crescimento}%\n\n${'─'.repeat(70)}\n\n${linhas}\n\n${'─'.repeat(70)}\nMeta mensal: R$ ${metaMensal.toLocaleString('pt-BR')}\nChicoFC · Sistema de Gestão de Quadras`
       const blob = new Blob([txt], { type: 'text/plain' })
       const url = URL.createObjectURL(blob)
-      const a = document.createElement('a'); a.href = url; a.download = `relatorio-9E10-${periodo}m.txt`; a.click()
+      const a = document.createElement('a'); a.href = url; a.download = `relatorio-${VENUE.nome}-${periodo}m.txt`; a.click()
     }
   }
 
   const kpis = [
-    { label: 'Receita total', value: `R$ ${totalPeriodo.toLocaleString('pt-BR')}`, color: 'var(--blue)', bg: 'var(--accent)', Icon: HandCoins },
-    { label: 'Mensalistas', value: `R$ ${totalMensal.toLocaleString('pt-BR')}`, color: 'var(--green-dark)', bg: 'var(--green-bg)', Icon: CalendarBlank },
-    { label: 'Avulsos', value: `R$ ${totalAvulso.toLocaleString('pt-BR')}`, color: 'var(--yellow)', bg: 'var(--yellow-bg)', Icon: Lightning },
-    { label: 'Crescimento', value: `${crescimento >= 0 ? '+' : ''}${crescimento}%`, color: crescimento >= 0 ? 'var(--green-dark)' : 'var(--red)', bg: crescimento >= 0 ? 'var(--green-bg)' : 'var(--red-bg)', Icon: crescimento >= 0 ? TrendUp : TrendDown },
+    { label: 'Receita total', value: `R$ ${totalPeriodo.toLocaleString('pt-BR')}`, color: 'var(--text)', Icon: HandCoins },
+    { label: 'Mensalistas', value: `R$ ${totalMensal.toLocaleString('pt-BR')}`, color: 'var(--text)', Icon: CalendarBlank },
+    { label: 'Avulsos', value: `R$ ${totalAvulso.toLocaleString('pt-BR')}`, color: 'var(--text)', Icon: Lightning },
+    { label: 'Crescimento', value: `${crescimento >= 0 ? '+' : ''}${crescimento}%`, color: crescimento >= 0 ? 'var(--green-dark)' : 'var(--red)', Icon: crescimento >= 0 ? TrendUp : TrendDown },
   ]
 
   return (
@@ -80,7 +80,7 @@ export default function Relatorios() {
         <div className="page-header">
           <div>
             <h1 className="page-title">Relatórios</h1>
-            <p className="page-subtitle">Análise financeira da 9E10</p>
+            <p className="page-subtitle">Análise financeira da {VENUE.nome}</p>
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <div style={{ fontSize: 12, color: 'var(--text-2)', background: 'var(--surface)', padding: '9px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', fontWeight: 500 }}>
@@ -102,7 +102,7 @@ export default function Relatorios() {
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <div>
                   <div className="eyebrow" style={{ marginBottom: 7 }}>{c.label}</div>
-                  <div style={{ fontSize: 21, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>{c.value}</div>
+                  <div style={{ fontSize: 21, fontWeight: 700, color: c.color, lineHeight: 1 }}>{c.value}</div>
                 </div>
                 <c.Icon size={20} weight="regular" color="var(--text-3)" />
               </div>

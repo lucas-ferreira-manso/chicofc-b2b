@@ -3,6 +3,7 @@ import GrupoItem from '../components/GrupoItem'
 import GrupoModal from '../components/GrupoModal'
 import { useState } from 'react'
 import { CheckCircle, HourglassMedium, ChartBar, Globe, FileText } from '@phosphor-icons/react'
+import { VENUE } from '../data'
 
 export default function Financeiro() {
   const { grupos, togglePago, cobrar, salvarGrupo, excluir, totalRecebido, totalPendente, totalEsperado } = useGrupos()
@@ -21,11 +22,11 @@ export default function Financeiro() {
     const linhas = gruposAtivos.map(g =>
       `${g.nome.padEnd(20)} ${g.tipo === 'mensal' ? 'Mensalista' : 'Avulso    '} R$ ${String(g.valor).padStart(6)} ${g.pago ? 'PAGO    ' : 'PENDENTE'}`
     ).join('\n')
-    const conteudo = `RELATÓRIO FINANCEIRO — 9E10\nMaio de 2025\nGerado em: ${new Date().toLocaleDateString('pt-BR')}\n${'─'.repeat(60)}\n\nRESUMO\nRecebido:  R$ ${totalRecebido.toLocaleString('pt-BR')}\nPendente:  R$ ${totalPendente.toLocaleString('pt-BR')}\nTotal:     R$ ${totalEsperado.toLocaleString('pt-BR')}\nTaxa:      ${pct}%\n\n${'─'.repeat(60)}\n\n${linhas}\n\n${'─'.repeat(60)}\nChicoFC · Sistema de Gestão de Quadras`
+    const conteudo = `RELATÓRIO FINANCEIRO — ${VENUE.nome}\nMaio de 2025\nGerado em: ${new Date().toLocaleDateString('pt-BR')}\n${'─'.repeat(60)}\n\nRESUMO\nRecebido:  R$ ${totalRecebido.toLocaleString('pt-BR')}\nPendente:  R$ ${totalPendente.toLocaleString('pt-BR')}\nTotal:     R$ ${totalEsperado.toLocaleString('pt-BR')}\nTaxa:      ${pct}%\n\n${'─'.repeat(60)}\n\n${linhas}\n\n${'─'.repeat(60)}\nChicoFC · Sistema de Gestão de Quadras`
     const blob = new Blob([conteudo], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
-    a.href = url; a.download = 'relatorio-9E10-maio-2025.txt'; a.click()
+    a.href = url; a.download = `relatorio-${VENUE.nome}-maio-2025.txt`; a.click()
     URL.revokeObjectURL(url)
   }
 
@@ -38,7 +39,7 @@ export default function Financeiro() {
         <td>R$ ${g.valor.toLocaleString('pt-BR')}</td>
         <td style="color:${g.pago ? '#0f7a38' : '#dc2626'};font-weight:600">${g.pago ? 'Pago' : 'Pendente'}</td>
       </tr>`).join('')
-    const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Relatório 9E10 - Maio 2025</title>
+    const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Relatório ${VENUE.nome} - Maio 2025</title>
     <style>body{font-family:system-ui,sans-serif;max-width:800px;margin:40px auto;padding:0 20px;color:#1a1a1a}
     h1{font-size:24px;margin-bottom:4px}p{color:#6b7280;margin-bottom:24px}
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
@@ -49,7 +50,7 @@ export default function Financeiro() {
     .progress{height:8px;background:#f0f1f4;border-radius:4px;margin-top:8px}
     .bar{height:100%;background:#0b2a7a;border-radius:4px;width:${pct}%}
     footer{margin-top:40px;font-size:12px;color:#9aa1ac;text-align:center}</style></head>
-    <body><h1>Relatório Financeiro — 9E10</h1><p>Maio de 2025 · Gerado em ${new Date().toLocaleDateString('pt-BR')}</p>
+    <body><h1>Relatório Financeiro — ${VENUE.nome}</h1><p>Maio de 2025 · Gerado em ${new Date().toLocaleDateString('pt-BR')}</p>
     <div class="stats">
       <div class="stat"><div class="stat-label">Recebido</div><div class="stat-value" style="color:#0f7a38">R$ ${totalRecebido.toLocaleString('pt-BR')}</div></div>
       <div class="stat"><div class="stat-label">Pendente</div><div class="stat-value" style="color:#dc2626">R$ ${totalPendente.toLocaleString('pt-BR')}</div></div>
@@ -61,14 +62,14 @@ export default function Financeiro() {
     const blob = new Blob([html], { type: 'text/html' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
-    a.href = url; a.download = 'relatorio-9E10-maio-2025.html'; a.click()
+    a.href = url; a.download = `relatorio-${VENUE.nome}-maio-2025.html`; a.click()
     URL.revokeObjectURL(url)
   }
 
   const kpis = [
-    { label: 'Recebido', value: `R$ ${totalRecebido.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>g.pago&&g.status==='ativo').length} grupos`, color: 'var(--green-dark)', bg: 'var(--green-bg)', Icon: CheckCircle },
-    { label: 'Pendente', value: `R$ ${totalPendente.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>!g.pago&&g.status==='ativo').length} grupos`, color: 'var(--red)', bg: 'var(--red-bg)', Icon: HourglassMedium },
-    { label: 'Total esperado', value: `R$ ${totalEsperado.toLocaleString('pt-BR')}`, sub: 'Maio/2025', color: 'var(--blue)', bg: 'var(--accent)', Icon: ChartBar },
+    { label: 'Recebido', value: `R$ ${totalRecebido.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>g.pago&&g.status==='ativo').length} grupos`, color: 'var(--green-dark)', Icon: CheckCircle },
+    { label: 'Pendente', value: `R$ ${totalPendente.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>!g.pago&&g.status==='ativo').length} grupos`, color: 'var(--red)', Icon: HourglassMedium },
+    { label: 'Total esperado', value: `R$ ${totalEsperado.toLocaleString('pt-BR')}`, sub: 'Maio/2025', color: 'var(--text)', Icon: ChartBar },
   ]
 
   return (
@@ -103,7 +104,7 @@ export default function Financeiro() {
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
                 <div>
                   <div className="eyebrow" style={{ marginBottom: 7 }}>{c.label}</div>
-                  <div style={{ fontSize: 25, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>{c.value}</div>
+                  <div style={{ fontSize: 25, fontWeight: 700, color: c.color, lineHeight: 1 }}>{c.value}</div>
                 </div>
                 <c.Icon size={20} weight="regular" color="var(--text-3)" />
               </div>

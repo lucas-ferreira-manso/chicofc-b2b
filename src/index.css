@@ -36,7 +36,6 @@
   /* Shape */
   --radius: 16px;
   --radius-sm: 10px;
-  --radius-lg: 20px;
   --radius-pill: 999px;
 
   --font: 'Hanken Grotesk', sans-serif;
@@ -285,7 +284,7 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 }
 .modal-panel {
   background: var(--surface);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
   width: 100%;
 }
