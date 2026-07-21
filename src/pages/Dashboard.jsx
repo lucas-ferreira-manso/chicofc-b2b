@@ -116,9 +116,9 @@ export default function Dashboard() {
 
           {/* Hero card */}
           <div style={{
-            background: 'linear-gradient(120deg, var(--blue) 0%, var(--blue-mid) 100%)',
+            background: 'var(--blue)',
             borderRadius: 'var(--radius)',
-            padding: '26px 28px',
+            padding: '24px 26px',
             color: '#fff',
             display: 'flex',
             flexDirection: 'column',
@@ -361,7 +361,7 @@ export default function Dashboard() {
                 {grupos.filter(g => g.status === 'ativo').map(g => (
                   <div key={g.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{
-                      width: 32, height: 32, borderRadius: 9, flexShrink: 0,
+                      width: 32, height: 32, borderRadius: 'var(--radius-xs)', flexShrink: 0,
                       background: g.pago ? 'var(--green-bg)' : 'var(--red-bg)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: 12, fontWeight: 700,

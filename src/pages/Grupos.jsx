@@ -74,7 +74,7 @@ export default function Grupos() {
           {stats.map(c => (
             <div key={c.label} className="card" style={{ padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
               <div className="icon-tile" style={{
-                width: 44, height: 44, borderRadius: 12, background: c.bg,
+                width: 44, height: 44, borderRadius: 'var(--radius-sm)', background: c.bg,
                 fontSize: 20, fontWeight: 700, color: c.color,
               }}>
                 {c.value}

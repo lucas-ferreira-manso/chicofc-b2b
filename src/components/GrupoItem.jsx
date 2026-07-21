@@ -38,7 +38,7 @@ export default function GrupoItem({ grupo, onTogglePago, onCobrar, onEditar, onE
     }}>
       {/* Avatar colorido */}
       <div style={{
-        width: 40, height: 40, borderRadius: 11, flexShrink: 0,
+        width: 40, height: 40, borderRadius: 'var(--radius-sm)', flexShrink: 0,
         background: statusBg,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontSize: 15, fontWeight: 700, color: statusColor,
@@ -104,7 +104,7 @@ export default function GrupoItem({ grupo, onTogglePago, onCobrar, onEditar, onE
         {menuOpen && (
           <div className="card" style={{
             position: 'absolute', right: 0, top: 38, zIndex: 100,
-            borderRadius: 12, boxShadow: 'var(--shadow-lg)',
+            boxShadow: 'var(--shadow-lg)',
             minWidth: 200, overflow: 'hidden', padding: '4px 0',
           }}>
             {isPendente && (

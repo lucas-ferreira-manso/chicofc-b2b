@@ -252,7 +252,7 @@ export default function Agenda() {
       {modal && !modal.slot && (
         <div className="modal-overlay" onClick={() => setModal(null)}>
           <div className="modal-panel" style={{ padding: 28, maxWidth: 400 }} onClick={e => e.stopPropagation()}>
-            <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Adicionar reserva</h3>
+            <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>Adicionar reserva</h3>
             <p style={{ fontSize: 12, color: 'var(--text-2)', marginBottom: 22 }}>
               {quadraAtual?.nome} · {modal.dia} · {modal.horario}
             </p>
@@ -333,7 +333,7 @@ export default function Agenda() {
             <div className="icon-tile" style={{ width: 48, height: 48, borderRadius: 'var(--radius-sm)', background: 'var(--red-bg)', marginBottom: 16 }}>
               <TrashSimple size={22} weight="regular" color="var(--red)" />
             </div>
-            <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>Remover horário?</h3>
+            <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>Remover horário?</h3>
             <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 24, lineHeight: 1.5 }}>
               {confirmRemove.dia} · {confirmRemove.horario} ficará disponível novamente.
             </p>

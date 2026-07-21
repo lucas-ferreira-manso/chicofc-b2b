@@ -6,18 +6,19 @@
   --blue-mid: #1e3fae;
   --blue-light: #4f8dff;
   --accent: #eef2ff;
+  --ring: #93a5e8;
 
-  /* Surfaces */
-  --bg: #f5f6f8;
+  /* Surfaces — neutral slate scale, borders do the work instead of shadows */
+  --bg: #f8fafc;
   --surface: #ffffff;
-  --surface-alt: #f4f5f7;
-  --border: #e7e8ec;
-  --border-light: #f0f1f4;
+  --surface-alt: #f1f5f9;
+  --border: #e2e8f0;
+  --border-light: #edf1f5;
 
   /* Text */
-  --text: #14161a;
-  --text-2: #6b7280;
-  --text-3: #9aa1ac;
+  --text: #0f172a;
+  --text-2: #64748b;
+  --text-3: #94a3b8;
 
   /* Status */
   --green: #16a34a;
@@ -28,14 +29,15 @@
   --yellow: #d97706;
   --yellow-bg: #fdf3e3;
 
-  /* Elevation — kept flat, no colored glow */
-  --shadow-sm: 0 1px 2px rgba(16,24,40,0.04), 0 1px 1px rgba(16,24,40,0.03);
-  --shadow-md: 0 2px 8px rgba(16,24,40,0.06), 0 1px 2px rgba(16,24,40,0.04);
-  --shadow-lg: 0 16px 40px rgba(16,24,40,0.16), 0 4px 10px rgba(16,24,40,0.06);
+  /* Elevation — flat by default; borders carry definition, shadows are barely-there */
+  --shadow-sm: 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-md: 0 2px 6px rgba(15,23,42,0.06);
+  --shadow-lg: 0 12px 32px rgba(15,23,42,0.14), 0 2px 8px rgba(15,23,42,0.06);
 
-  /* Shape */
-  --radius: 16px;
-  --radius-sm: 10px;
+  /* Shape — tight, restrained radius */
+  --radius: 10px;
+  --radius-sm: 8px;
+  --radius-xs: 6px;
   --radius-pill: 999px;
 
   --font: 'Hanken Grotesk', sans-serif;
@@ -90,11 +92,11 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 }
 
 .page-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 600;
   color: var(--text);
   margin-bottom: 4px;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .page-subtitle {
@@ -111,12 +113,12 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   box-shadow: var(--shadow-sm);
 }
 
-.card-pad { padding: 22px 24px; }
-.card-pad-sm { padding: 16px 20px; }
+.card-pad { padding: 20px 22px; }
+.card-pad-sm { padding: 14px 18px; }
 
 .section-title {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--text);
   letter-spacing: -0.01em;
 }
@@ -143,15 +145,19 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   gap: 7px;
   font-family: var(--font);
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 500;
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
-  padding: 10px 18px;
+  padding: 9px 16px;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
   white-space: nowrap;
 }
 .btn:disabled { cursor: not-allowed; opacity: 0.55; }
+.btn:focus-visible, .input:focus-visible, .input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+}
 
 .btn-primary {
   background: var(--blue);
@@ -216,7 +222,7 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 
 .pill-tab {
   padding: 6px 14px;
-  border-radius: 8px;
+  border-radius: var(--radius-xs);
   border: none;
   font-family: var(--font);
   font-size: 12.5px;
@@ -248,16 +254,16 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 /* ─── Inputs ──────────────────────────────────────────────────────────── */
 .input {
   width: 100%;
-  padding: 10px 14px;
+  padding: 9px 12px;
   border-radius: var(--radius-sm);
-  border: 1.5px solid var(--border);
+  border: 1px solid var(--border);
   font-size: 13.5px;
   font-family: var(--font);
   color: var(--text);
   background: var(--surface);
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .input:focus { border-color: var(--blue); }
 

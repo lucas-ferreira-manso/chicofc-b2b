@@ -26,7 +26,7 @@ export default function GrupoModal({ grupo, onSave, onClose }) {
       <div className="modal-panel" style={{ padding: 28, maxWidth: 460, maxHeight: '90vh', overflowY: 'auto' }}
         onClick={e => e.stopPropagation()}>
 
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 22, letterSpacing: '-0.02em' }}>
+        <h3 style={{ fontSize: 17, fontWeight: 600, color: 'var(--text)', marginBottom: 22, letterSpacing: '-0.02em' }}>
           {isEdit ? 'Editar grupo' : 'Novo grupo'}
         </h3>
 

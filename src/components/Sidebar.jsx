@@ -31,7 +31,7 @@ export default function Sidebar() {
           <div style={{
             width: 42, height: 42,
             background: 'var(--blue-light)',
-            borderRadius: 12,
+            borderRadius: 'var(--radius-sm)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
             fontSize: 17, fontWeight: 700, color: '#0a1c56',
@@ -40,7 +40,7 @@ export default function Sidebar() {
           </div>
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <div style={{ fontSize: 16.5, fontWeight: 700, color: '#fff', lineHeight: 1.15, letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div style={{ fontSize: 16.5, fontWeight: 600, color: '#fff', lineHeight: 1.15, letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {VENUE.nome}
               </div>
               <div title="Online" style={{ width: 7, height: 7, background: '#34d399', borderRadius: '50%', flexShrink: 0 }} />
@@ -59,7 +59,7 @@ export default function Sidebar() {
           <NavLink key={to} to={to} end={to === '/'}
             style={({ isActive }) => ({
               display: 'flex', alignItems: 'center', gap: 11,
-              padding: '9px 12px', borderRadius: 10, marginBottom: 2,
+              padding: '9px 12px', borderRadius: 'var(--radius-sm)', marginBottom: 2,
               textDecoration: 'none', fontSize: 13.5, fontWeight: 500,
               background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
               color: isActive ? '#fff' : 'rgba(255,255,255,0.55)',
@@ -72,10 +72,10 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div style={{ padding: '10px 12px 16px' }}>
-        <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '9px 12px', borderRadius: 10, color: 'rgba(255,255,255,0.55)', fontSize: 13.5, fontWeight: 500, textDecoration: 'none', marginBottom: 2 }}>
+        <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '9px 12px', borderRadius: 'var(--radius-sm)', color: 'rgba(255,255,255,0.55)', fontSize: 13.5, fontWeight: 500, textDecoration: 'none', marginBottom: 2 }}>
           <Question size={19} weight="regular" /> Ajuda
         </a>
-        <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '9px 12px', borderRadius: 10, color: 'rgba(255,255,255,0.55)', fontSize: 13.5, fontWeight: 500, textDecoration: 'none' }}>
+        <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '9px 12px', borderRadius: 'var(--radius-sm)', color: 'rgba(255,255,255,0.55)', fontSize: 13.5, fontWeight: 500, textDecoration: 'none' }}>
           <Gear size={19} weight="regular" /> Configurações
         </a>
         <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.22)', textAlign: 'center', lineHeight: 1.5, marginTop: 14 }}>
