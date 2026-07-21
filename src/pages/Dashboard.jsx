@@ -338,7 +338,6 @@ export default function Dashboard() {
                   <div key={n.id} style={{
                     padding: '12px 14px', borderRadius: 'var(--radius-sm)',
                     background: n.urgente ? 'var(--red-bg)' : 'var(--surface-alt)',
-                    borderLeft: `3px solid ${n.urgente ? 'var(--red)' : 'var(--border)'}`,
                   }}>
                     <div style={{ fontSize: 12.5, color: 'var(--text)', lineHeight: 1.45, marginBottom: 4 }}>{n.msg}</div>
                     <div style={{ fontSize: 10.5, color: 'var(--text-3)', fontWeight: 500 }}>há {n.tempo}</div>
