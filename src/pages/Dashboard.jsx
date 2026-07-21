@@ -180,9 +180,7 @@ export default function Dashboard() {
                       <div className="eyebrow" style={{ marginBottom: 7 }}>{c.label}</div>
                       <div style={{ fontSize: 23, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>{c.value}</div>
                     </div>
-                    <div className="icon-tile" style={{ width: 38, height: 38, background: c.bg }}>
-                      <c.Icon size={19} weight="regular" color={c.color} />
-                    </div>
+                    <c.Icon size={20} weight="regular" color="var(--text-3)" />
                   </div>
                   {c.pct !== null && (
                     <div className="progress-track" style={{ height: 4, marginBottom: 9 }}>
