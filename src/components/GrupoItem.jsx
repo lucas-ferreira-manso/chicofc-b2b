@@ -1,4 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
+import {
+  CalendarBlank, MapPin, UsersThree, DotsThreeVertical,
+  CheckCircle, ArrowUUpLeft, WhatsappLogo, PencilSimple, TrashSimple,
+} from '@phosphor-icons/react'
 
 const QUADRA_NOMES = {
   society: 'Campo Society', volei1: 'Vôlei 1', volei2: 'Vôlei 2', volei3: 'Vôlei 3', volei4: 'Vôlei 4'
@@ -20,55 +24,49 @@ export default function GrupoItem({ grupo, onTogglePago, onCobrar, onEditar, onE
   const isPendente = !isPago && grupo.status === 'ativo'
   const isEspera = grupo.status === 'espera'
 
-  const statusColor = isPago ? '#34a853' : isPendente ? '#ea4335' : '#9aa0a6'
-  const statusBg = isPago ? '#e6f4ea' : isPendente ? '#fce8e6' : '#f3f4f6'
+  const statusColor = isPago ? 'var(--green)' : isPendente ? 'var(--red)' : 'var(--text-3)'
+  const statusBg = isPago ? 'var(--green-bg)' : isPendente ? 'var(--red-bg)' : 'var(--surface-alt)'
   const statusText = isPago ? 'Pago' : isPendente ? 'Pendente' : 'Espera'
 
   return (
-    <div style={{
-      background: '#fff',
-      borderRadius: 12,
-      padding: '14px 16px',
-      border: '1px solid var(--border)',
-      boxShadow: 'var(--shadow-sm)',
+    <div className="card" style={{
+      padding: '14px 18px',
       display: 'flex',
       alignItems: 'center',
-      gap: 14,
+      gap: 16,
       position: 'relative',
-      transition: 'box-shadow 0.15s',
     }}>
       {/* Avatar colorido */}
       <div style={{
-        width: 40, height: 40, borderRadius: 10, flexShrink: 0,
-        background: `${statusColor}18`,
-        border: `1.5px solid ${statusColor}40`,
+        width: 40, height: 40, borderRadius: 11, flexShrink: 0,
+        background: statusBg,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 16, fontWeight: 700, color: statusColor,
+        fontSize: 15, fontWeight: 700, color: statusColor,
       }}>
         {grupo.nome.charAt(0).toUpperCase()}
       </div>
 
       {/* Info */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
           <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {grupo.nome}
           </span>
           {isEspera && (
-            <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 20, background: '#fef7e0', color: '#b45309', fontWeight: 600, flexShrink: 0 }}>
+            <span className="badge" style={{ background: 'var(--yellow-bg)', color: 'var(--yellow)', flexShrink: 0 }}>
               Espera
             </span>
           )}
         </div>
-        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 12, color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <span style={{ opacity: 0.7 }}>📅</span> {grupo.dia} · {grupo.horario}
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 12, color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: 5 }}>
+            <CalendarBlank size={14} weight="regular" /> {grupo.dia} · {grupo.horario}
           </span>
-          <span style={{ fontSize: 12, color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <span style={{ opacity: 0.7 }}>🏟</span> {QUADRA_NOMES[grupo.quadra] || grupo.quadra}
+          <span style={{ fontSize: 12, color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: 5 }}>
+            <MapPin size={14} weight="regular" /> {QUADRA_NOMES[grupo.quadra] || grupo.quadra}
           </span>
-          <span style={{ fontSize: 12, color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <span style={{ opacity: 0.7 }}>👥</span> {grupo.jogadores} jogadores
+          <span style={{ fontSize: 12, color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: 5 }}>
+            <UsersThree size={14} weight="regular" /> {grupo.jogadores} jogadores
           </span>
         </div>
       </div>
@@ -78,14 +76,13 @@ export default function GrupoItem({ grupo, onTogglePago, onCobrar, onEditar, onE
         <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>
           R$ {grupo.valor?.toLocaleString('pt-BR')}
         </div>
-        <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>/mês</div>
+        <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 3 }}>/mês</div>
       </div>
 
       {/* Badge pagamento */}
-      <span style={{
-        fontSize: 11, padding: '4px 12px', borderRadius: 20, fontWeight: 600, flexShrink: 0,
-        background: statusBg, color: statusColor,
-        minWidth: 68, textAlign: 'center',
+      <span className="badge" style={{
+        background: statusBg, color: statusColor, flexShrink: 0,
+        minWidth: 68, justifyContent: 'center',
       }}>
         {statusText}
       </span>
@@ -96,36 +93,36 @@ export default function GrupoItem({ grupo, onTogglePago, onCobrar, onEditar, onE
           onClick={() => setMenuOpen(o => !o)}
           style={{
             width: 32, height: 32, borderRadius: 8,
-            background: menuOpen ? '#f0f4ff' : 'transparent',
+            background: menuOpen ? 'var(--surface-alt)' : 'transparent',
             border: 'none', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexDirection: 'column', gap: 3,
+            color: 'var(--text-3)',
           }}>
-          {[0,1,2].map(i => <div key={i} style={{ width: 3.5, height: 3.5, borderRadius: '50%', background: '#9aa0a6' }} />)}
+          <DotsThreeVertical size={18} weight="regular" />
         </button>
 
         {menuOpen && (
-          <div style={{
-            position: 'absolute', right: 0, top: 36, zIndex: 100, background: '#fff',
-            borderRadius: 12, border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)',
-            minWidth: 190, overflow: 'hidden', padding: '4px 0',
+          <div className="card" style={{
+            position: 'absolute', right: 0, top: 38, zIndex: 100,
+            borderRadius: 12, boxShadow: 'var(--shadow-lg)',
+            minWidth: 200, overflow: 'hidden', padding: '4px 0',
           }}>
             {isPendente && (
-              <MenuItem icon="✅" label="Marcar como pago" color="#0d7a3e"
+              <MenuItem Icon={CheckCircle} label="Marcar como pago" color="var(--green-dark)"
                 onClick={() => { onTogglePago(grupo.id); setMenuOpen(false) }} />
             )}
             {isPago && (
-              <MenuItem icon="↩️" label="Marcar como pendente" color="#b45309"
+              <MenuItem Icon={ArrowUUpLeft} label="Marcar como pendente" color="var(--yellow)"
                 onClick={() => { onTogglePago(grupo.id); setMenuOpen(false) }} />
             )}
             {isPendente && (
-              <MenuItem icon="💬" label="Cobrar via WhatsApp" color="#25d366"
+              <MenuItem Icon={WhatsappLogo} label="Cobrar via WhatsApp" color="#25d366"
                 onClick={() => { onCobrar(grupo); setMenuOpen(false) }} />
             )}
-            <MenuItem icon="✏️" label="Editar grupo" color="#082996"
+            <MenuItem Icon={PencilSimple} label="Editar grupo" color="var(--blue)"
               onClick={() => { onEditar(grupo); setMenuOpen(false) }} />
-            <div style={{ height: 1, background: '#f0f0f0', margin: '4px 0' }} />
-            <MenuItem icon="🗑" label="Excluir grupo" color="#ea4335"
+            <div style={{ height: 1, background: 'var(--border-light)', margin: '4px 0' }} />
+            <MenuItem Icon={TrashSimple} label="Excluir grupo" color="var(--red)"
               onClick={() => { onExcluir(grupo); setMenuOpen(false) }} />
           </div>
         )}
@@ -134,15 +131,15 @@ export default function GrupoItem({ grupo, onTogglePago, onCobrar, onEditar, onE
   )
 }
 
-function MenuItem({ icon, label, color, onClick }) {
+function MenuItem({ Icon, label, color, onClick }) {
   const [hover, setHover] = useState(false)
   return (
     <button onClick={onClick} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
       style={{
-        width: '100%', padding: '9px 16px', background: hover ? '#f8f9fb' : 'transparent',
+        width: '100%', padding: '10px 16px', background: hover ? 'var(--surface-alt)' : 'transparent',
         border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, textAlign: 'left'
       }}>
-      <span style={{ fontSize: 14 }}>{icon}</span>
+      <Icon size={16} weight="regular" color={color} />
       <span style={{ fontSize: 13, fontWeight: 500, color }}>{label}</span>
     </button>
   )

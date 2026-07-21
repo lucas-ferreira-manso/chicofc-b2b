@@ -2,6 +2,7 @@ import { useGrupos } from '../components/useGrupos'
 import GrupoItem from '../components/GrupoItem'
 import GrupoModal from '../components/GrupoModal'
 import { useState } from 'react'
+import { CheckCircle, HourglassMedium, ChartBar, Globe, FileText } from '@phosphor-icons/react'
 
 export default function Financeiro() {
   const { grupos, togglePago, cobrar, salvarGrupo, excluir, totalRecebido, totalPendente, totalEsperado } = useGrupos()
@@ -35,24 +36,24 @@ export default function Financeiro() {
         <td>${g.tipo === 'mensal' ? 'Mensalista' : 'Avulso'}</td>
         <td>${g.dia} · ${g.horario}</td>
         <td>R$ ${g.valor.toLocaleString('pt-BR')}</td>
-        <td style="color:${g.pago ? '#0d7a3e' : '#ea4335'};font-weight:600">${g.pago ? 'Pago' : 'Pendente'}</td>
+        <td style="color:${g.pago ? '#0f7a38' : '#dc2626'};font-weight:600">${g.pago ? 'Pago' : 'Pendente'}</td>
       </tr>`).join('')
     const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Relatório 9E10 - Maio 2025</title>
     <style>body{font-family:system-ui,sans-serif;max-width:800px;margin:40px auto;padding:0 20px;color:#1a1a1a}
-    h1{font-size:24px;margin-bottom:4px}p{color:#5f6368;margin-bottom:24px}
+    h1{font-size:24px;margin-bottom:4px}p{color:#6b7280;margin-bottom:24px}
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
-    .stat{background:#f8f9fb;border-radius:10px;padding:16px}.stat-label{font-size:12px;color:#5f6368;margin-bottom:4px}
+    .stat{background:#f5f6f8;border-radius:10px;padding:16px}.stat-label{font-size:12px;color:#6b7280;margin-bottom:4px}
     .stat-value{font-size:22px;font-weight:700}table{width:100%;border-collapse:collapse}
-    th{text-align:left;padding:10px 12px;font-size:12px;color:#5f6368;border-bottom:2px solid #e8eaed;text-transform:uppercase}
-    td{padding:12px;border-bottom:1px solid #f0f0f0;font-size:14px}
-    .progress{height:8px;background:#f0f0f0;border-radius:4px;margin-top:8px}
-    .bar{height:100%;background:#082996;border-radius:4px;width:${pct}%}
-    footer{margin-top:40px;font-size:12px;color:#9aa0a6;text-align:center}</style></head>
+    th{text-align:left;padding:10px 12px;font-size:12px;color:#6b7280;border-bottom:2px solid #e7e8ec;text-transform:uppercase}
+    td{padding:12px;border-bottom:1px solid #f0f1f4;font-size:14px}
+    .progress{height:8px;background:#f0f1f4;border-radius:4px;margin-top:8px}
+    .bar{height:100%;background:#0b2a7a;border-radius:4px;width:${pct}%}
+    footer{margin-top:40px;font-size:12px;color:#9aa1ac;text-align:center}</style></head>
     <body><h1>Relatório Financeiro — 9E10</h1><p>Maio de 2025 · Gerado em ${new Date().toLocaleDateString('pt-BR')}</p>
     <div class="stats">
-      <div class="stat"><div class="stat-label">Recebido</div><div class="stat-value" style="color:#0d7a3e">R$ ${totalRecebido.toLocaleString('pt-BR')}</div></div>
-      <div class="stat"><div class="stat-label">Pendente</div><div class="stat-value" style="color:#ea4335">R$ ${totalPendente.toLocaleString('pt-BR')}</div></div>
-      <div class="stat"><div class="stat-label">Arrecadado</div><div class="stat-value" style="color:#082996">${pct}%</div><div class="progress"><div class="bar"></div></div></div>
+      <div class="stat"><div class="stat-label">Recebido</div><div class="stat-value" style="color:#0f7a38">R$ ${totalRecebido.toLocaleString('pt-BR')}</div></div>
+      <div class="stat"><div class="stat-label">Pendente</div><div class="stat-value" style="color:#dc2626">R$ ${totalPendente.toLocaleString('pt-BR')}</div></div>
+      <div class="stat"><div class="stat-label">Arrecadado</div><div class="stat-value" style="color:#0b2a7a">${pct}%</div><div class="progress"><div class="bar"></div></div></div>
     </div>
     <table><thead><tr><th>Grupo</th><th>Tipo</th><th>Horário</th><th>Valor</th><th>Status</th></tr></thead>
     <tbody>${rows}</tbody></table>
@@ -64,6 +65,12 @@ export default function Financeiro() {
     URL.revokeObjectURL(url)
   }
 
+  const kpis = [
+    { label: 'Recebido', value: `R$ ${totalRecebido.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>g.pago&&g.status==='ativo').length} grupos`, color: 'var(--green-dark)', bg: 'var(--green-bg)', Icon: CheckCircle },
+    { label: 'Pendente', value: `R$ ${totalPendente.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>!g.pago&&g.status==='ativo').length} grupos`, color: 'var(--red)', bg: 'var(--red-bg)', Icon: HourglassMedium },
+    { label: 'Total esperado', value: `R$ ${totalEsperado.toLocaleString('pt-BR')}`, sub: 'Maio/2025', color: 'var(--blue)', bg: 'var(--accent)', Icon: ChartBar },
+  ]
+
   return (
     <div className="page">
       <div className="page-inner">
@@ -74,41 +81,33 @@ export default function Financeiro() {
         )}
 
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
+        <div className="page-header">
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 3 }}>Financeiro</h1>
-            <p style={{ fontSize: 13, color: 'var(--text-2)' }}>Maio de 2025 · Clique no status para atualizar</p>
+            <h1 className="page-title">Financeiro</h1>
+            <p className="page-subtitle">Maio de 2025 · Clique no status para atualizar</p>
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <button onClick={exportHTML}
-              style={{ padding: '9px 16px', borderRadius: 9, background: '#fff', color: '#082996', border: '1.5px solid var(--border)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-              🌐 Exportar HTML
+            <button onClick={exportHTML} className="btn btn-secondary">
+              <Globe size={15} weight="regular" /> Exportar HTML
             </button>
-            <button onClick={exportTXT}
-              style={{ padding: '9px 16px', borderRadius: 9, background: 'var(--blue)', color: '#fff', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 14px rgba(8,41,150,0.3)' }}>
-              📄 Exportar TXT
+            <button onClick={exportTXT} className="btn btn-primary">
+              <FileText size={15} weight="regular" /> Exportar TXT
             </button>
           </div>
         </div>
 
         {/* KPIs */}
         <div className="kpi-grid-3" style={{ marginBottom: 20 }}>
-          {[
-            { label: 'Recebido', value: `R$ ${totalRecebido.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>g.pago&&g.status==='ativo').length} grupos`, color: '#0d7a3e', bg: '#e6f4ea', icon: '✅' },
-            { label: 'Pendente', value: `R$ ${totalPendente.toLocaleString('pt-BR')}`, sub: `${grupos.filter(g=>!g.pago&&g.status==='ativo').length} grupos`, color: '#ea4335', bg: '#fce8e6', icon: '⏳' },
-            { label: 'Total esperado', value: `R$ ${totalEsperado.toLocaleString('pt-BR')}`, sub: 'Maio/2025', color: '#082996', bg: '#e8f0ff', icon: '📊' },
-          ].map(c => (
-            <div key={c.label} style={{
-              background: '#fff', borderRadius: 'var(--radius)',
-              padding: '20px 24px', border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)',
-            }}>
+          {kpis.map(c => (
+            <div key={c.label} className="card" style={{ padding: '20px 24px' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
                 <div>
-                  <div style={{ fontSize: 11, color: 'var(--text-2)', fontWeight: 500, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{c.label}</div>
-                  <div style={{ fontSize: 26, fontWeight: 700, color: c.color, lineHeight: 1 }}>{c.value}</div>
+                  <div className="eyebrow" style={{ marginBottom: 7 }}>{c.label}</div>
+                  <div style={{ fontSize: 25, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>{c.value}</div>
                 </div>
-                <div style={{ width: 42, height: 42, borderRadius: 11, background: c.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>{c.icon}</div>
+                <div className="icon-tile" style={{ width: 40, height: 40, background: c.bg }}>
+                  <c.Icon size={20} weight="regular" color={c.color} />
+                </div>
               </div>
               <div style={{ fontSize: 12, color: 'var(--text-3)' }}>{c.sub}</div>
             </div>
@@ -116,11 +115,7 @@ export default function Financeiro() {
         </div>
 
         {/* Barra progresso */}
-        <div style={{
-          background: '#fff', borderRadius: 'var(--radius)',
-          padding: '22px 24px', border: '1px solid var(--border)',
-          marginBottom: 20, boxShadow: 'var(--shadow-sm)',
-        }}>
+        <div className="card" style={{ padding: '22px 24px', marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>Progresso de cobrança — Maio/25</div>
@@ -129,15 +124,14 @@ export default function Financeiro() {
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: 28, fontWeight: 700, color: pct >= 80 ? '#0d7a3e' : 'var(--blue)', lineHeight: 1 }}>{pct}%</div>
-              <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>arrecadado</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: pct >= 80 ? 'var(--green-dark)' : 'var(--blue)', lineHeight: 1, letterSpacing: '-0.02em' }}>{pct}%</div>
+              <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 3 }}>arrecadado</div>
             </div>
           </div>
-          <div style={{ height: 10, background: '#f0f2f5', borderRadius: 5, overflow: 'hidden' }}>
-            <div style={{
-              height: '100%', width: `${pct}%`,
-              background: pct >= 100 ? 'linear-gradient(90deg, #34a853, #0d7a3e)' : 'linear-gradient(90deg, #082996, #1a3fbe)',
-              borderRadius: 5, transition: 'width 0.6s ease',
+          <div className="progress-track" style={{ height: 10 }}>
+            <div className="progress-bar" style={{
+              width: `${pct}%`,
+              background: pct >= 100 ? 'var(--green)' : 'var(--blue)',
             }} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
@@ -147,12 +141,8 @@ export default function Financeiro() {
         </div>
 
         {/* Lista grupos */}
-        <div style={{
-          background: '#fff', borderRadius: 'var(--radius)',
-          padding: '20px 24px', border: '1px solid var(--border)',
-          boxShadow: 'var(--shadow-sm)',
-        }}>
-          <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 16 }}>Detalhamento por grupo</h2>
+        <div className="card" style={{ padding: '20px 24px' }}>
+          <h2 className="section-title" style={{ marginBottom: 16 }}>Detalhamento por grupo</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {gruposAtivos.map(g => (
               <GrupoItem key={g.id} grupo={g}

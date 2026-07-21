@@ -3,10 +3,14 @@ import { NOTIFICACOES, HISTORICO_MENSAL, CONFIG } from '../data'
 import GrupoItem from '../components/GrupoItem'
 import GrupoModal from '../components/GrupoModal'
 import { useGrupos } from '../components/useGrupos'
+import {
+  Plus, TrendUp, TrendDown, HandCoins, HourglassMedium, SoccerBall, ChartPieSlice,
+  Bell, WarningCircle, CheckCircle, PencilSimple,
+} from '@phosphor-icons/react'
 
 const PERIODOS = [1, 3, 6, 12]
 
-function Sparkline({ data, color = '#66d1ff', height = 44 }) {
+function Sparkline({ data, color = 'var(--blue-light)', height = 44 }) {
   if (!data || data.length < 2) return null
   const min = Math.min(...data)
   const max = Math.max(...data)
@@ -21,7 +25,7 @@ function Sparkline({ data, color = '#66d1ff', height = 44 }) {
   const lastY = h - ((data[data.length-1] - min) / range) * (h - 4) - 2
   return (
     <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ overflow: 'visible' }}>
-      <polyline points={pts} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.7" />
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.8" />
       <circle cx={lastX} cy={lastY} r="3.5" fill={color} />
     </svg>
   )
@@ -54,6 +58,37 @@ export default function Dashboard() {
     }
   }
 
+  const kpis = [
+    {
+      label: 'Recebido',
+      value: `R$ ${totalRecebido.toLocaleString('pt-BR')}`,
+      sub: `${grupos.filter(g => g.pago && g.status === 'ativo').length} grupos pagos`,
+      color: 'var(--green-dark)', bg: 'var(--green-bg)', Icon: HandCoins,
+      pct: Math.round((totalRecebido / totalEsperado) * 100),
+    },
+    {
+      label: 'Pendente',
+      value: `R$ ${totalPendente.toLocaleString('pt-BR')}`,
+      sub: `${grupos.filter(g => !g.pago && g.status === 'ativo').length} grupos`,
+      color: 'var(--red)', bg: 'var(--red-bg)', Icon: HourglassMedium,
+      pct: Math.round((totalPendente / totalEsperado) * 100),
+    },
+    {
+      label: 'Grupos ativos',
+      value: gruposAtivos.length,
+      sub: `Potencial R$ ${totalEsperado.toLocaleString('pt-BR')}/mês`,
+      color: 'var(--blue)', bg: 'var(--accent)', Icon: SoccerBall,
+      pct: null,
+    },
+    {
+      label: 'Ocupação',
+      value: `${Math.round((gruposAtivos.filter(g=>g.quadra==='society').length / 24) * 100)}%`,
+      sub: `${gruposAtivos.filter(g=>g.quadra==='society').length} de 24 horários`,
+      color: 'var(--yellow)', bg: 'var(--yellow-bg)', Icon: ChartPieSlice,
+      pct: Math.round((gruposAtivos.filter(g=>g.quadra==='society').length / 24) * 100),
+    },
+  ]
+
   return (
     <div className="page">
       <div className="page-inner">
@@ -66,24 +101,13 @@ export default function Dashboard() {
         )}
 
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
+        <div className="page-header">
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 3 }}>
-              Bom dia, 9E10! 👋
-            </h1>
-            <p style={{ fontSize: 13, color: 'var(--text-2)' }}>
-              Maio de 2025 · Semana em andamento
-            </p>
+            <h1 className="page-title">Bom dia, 9E10 👋</h1>
+            <p className="page-subtitle">Maio de 2025 · Semana em andamento</p>
           </div>
-          <button onClick={() => setModalGrupo({})}
-            style={{
-              padding: '10px 20px', borderRadius: 10,
-              background: 'var(--blue)', color: '#fff',
-              border: 'none', fontSize: 13, fontWeight: 600,
-              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7,
-              boxShadow: '0 4px 14px rgba(8,41,150,0.3)',
-            }}>
-            <span style={{ fontSize: 18, lineHeight: 1 }}>+</span> Novo grupo
+          <button onClick={() => setModalGrupo({})} className="btn btn-primary">
+            <Plus size={16} weight="bold" /> Novo grupo
           </button>
         </div>
 
@@ -95,58 +119,52 @@ export default function Dashboard() {
 
             {/* Hero card */}
             <div style={{
-              background: 'linear-gradient(135deg, #082996 0%, #1a3fbe 60%, #0d47a1 100%)',
+              background: 'linear-gradient(120deg, var(--blue) 0%, var(--blue-mid) 100%)',
               borderRadius: 'var(--radius)',
-              padding: '28px 32px',
+              padding: '26px 28px',
               color: '#fff',
-              position: 'relative',
-              overflow: 'hidden',
-              boxShadow: '0 8px 32px rgba(8,41,150,0.35)',
             }}>
-              {/* Background decoration */}
-              <div style={{ position: 'absolute', top: -30, right: -30, width: 160, height: 160, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
-              <div style={{ position: 'absolute', bottom: -40, right: 60, width: 100, height: 100, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
-
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', position: 'relative' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 8, fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginBottom: 9, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                     Receita — Maio 2025
                   </div>
-                  <div style={{ fontSize: 38, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1 }}>
+                  <div style={{ fontSize: 36, fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1 }}>
                     R$ {totalEsperado.toLocaleString('pt-BR')}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 14 }}>
                     <span style={{
-                      fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 20,
-                      background: crescMes >= 0 ? 'rgba(52,168,83,0.25)' : 'rgba(234,67,53,0.25)',
-                      color: crescMes >= 0 ? '#6ee7a0' : '#fca5a5',
+                      display: 'inline-flex', alignItems: 'center', gap: 4,
+                      fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 'var(--radius-pill)',
+                      background: crescMes >= 0 ? 'rgba(52,211,153,0.2)' : 'rgba(248,113,113,0.2)',
+                      color: crescMes >= 0 ? '#6ee7b0' : '#fca5a5',
                     }}>
-                      {crescMes >= 0 ? '↑' : '↓'} {Math.abs(crescMes)}% vs mês anterior
+                      {crescMes >= 0 ? <TrendUp size={13} weight="bold" /> : <TrendDown size={13} weight="bold" />}
+                      {Math.abs(crescMes)}% vs mês anterior
                     </span>
                   </div>
                 </div>
-                <div style={{ opacity: 0.9 }}>
-                  <Sparkline data={sparkData} color="#66d1ff" height={52} />
+                <div style={{ opacity: 0.95 }}>
+                  <Sparkline data={sparkData} height={48} />
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+              <div style={{ display: 'flex', gap: 10, marginTop: 22 }}>
                 <button onClick={() => setModalGrupo({})}
                   style={{
-                    padding: '9px 20px', borderRadius: 9, border: 'none',
-                    background: 'rgba(255,255,255,0.18)', color: '#fff',
-                    fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                    backdropFilter: 'blur(4px)',
+                    padding: '9px 18px', borderRadius: 'var(--radius-sm)', border: 'none',
+                    background: 'rgba(255,255,255,0.16)', color: '#fff',
+                    fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font)',
                     display: 'flex', alignItems: 'center', gap: 6,
                   }}>
-                  + Novo grupo
+                  <Plus size={15} weight="bold" /> Novo grupo
                 </button>
                 <button
                   style={{
-                    padding: '9px 20px', borderRadius: 9,
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    background: 'transparent', color: 'rgba(255,255,255,0.8)',
-                    fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                    padding: '9px 18px', borderRadius: 'var(--radius-sm)',
+                    border: '1px solid rgba(255,255,255,0.25)',
+                    background: 'transparent', color: 'rgba(255,255,255,0.85)',
+                    fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font)',
                   }}>
                   Ver detalhes
                 </button>
@@ -155,93 +173,49 @@ export default function Dashboard() {
 
             {/* KPI cards */}
             <div className="kpi-grid">
-              {[
-                {
-                  label: 'Recebido',
-                  value: `R$ ${totalRecebido.toLocaleString('pt-BR')}`,
-                  sub: `${grupos.filter(g => g.pago && g.status === 'ativo').length} grupos pagos`,
-                  color: '#0d7a3e', bg: '#e6f4ea', icon: '💰',
-                  pct: Math.round((totalRecebido / totalEsperado) * 100),
-                },
-                {
-                  label: 'Pendente',
-                  value: `R$ ${totalPendente.toLocaleString('pt-BR')}`,
-                  sub: `${grupos.filter(g => !g.pago && g.status === 'ativo').length} grupos`,
-                  color: '#ea4335', bg: '#fce8e6', icon: '⏳',
-                  pct: Math.round((totalPendente / totalEsperado) * 100),
-                },
-                {
-                  label: 'Grupos ativos',
-                  value: gruposAtivos.length,
-                  sub: `Potencial R$ ${totalEsperado.toLocaleString('pt-BR')}/mês`,
-                  color: '#082996', bg: '#e8f0ff', icon: '⚽',
-                  pct: null,
-                },
-                {
-                  label: 'Ocupação',
-                  value: `${Math.round((gruposAtivos.filter(g=>g.quadra==='society').length / 24) * 100)}%`,
-                  sub: `${gruposAtivos.filter(g=>g.quadra==='society').length} de 24 horários`,
-                  color: '#b45309', bg: '#fef7e0', icon: '📊',
-                  pct: Math.round((gruposAtivos.filter(g=>g.quadra==='society').length / 24) * 100),
-                },
-              ].map(c => (
-                <div key={c.label} style={{
-                  background: '#fff', borderRadius: 'var(--radius)',
-                  padding: '20px', border: '1px solid var(--border)',
-                  boxShadow: 'var(--shadow-sm)',
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+              {kpis.map(c => (
+                <div key={c.label} className="card card-pad">
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
                     <div>
-                      <div style={{ fontSize: 11, color: 'var(--text-2)', fontWeight: 500, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{c.label}</div>
-                      <div style={{ fontSize: 24, fontWeight: 700, color: c.color, lineHeight: 1 }}>{c.value}</div>
+                      <div className="eyebrow" style={{ marginBottom: 7 }}>{c.label}</div>
+                      <div style={{ fontSize: 23, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>{c.value}</div>
                     </div>
-                    <div style={{
-                      width: 40, height: 40, borderRadius: 10, background: c.bg,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18,
-                    }}>{c.icon}</div>
+                    <div className="icon-tile" style={{ width: 38, height: 38, background: c.bg }}>
+                      <c.Icon size={19} weight="regular" color={c.color} />
+                    </div>
                   </div>
                   {c.pct !== null && (
-                    <div style={{ height: 3, background: '#f0f0f0', borderRadius: 2, marginBottom: 8, overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${c.pct}%`, background: c.color, borderRadius: 2, transition: 'width 0.6s ease' }} />
+                    <div className="progress-track" style={{ height: 4, marginBottom: 9 }}>
+                      <div className="progress-bar" style={{ width: `${c.pct}%`, background: c.color }} />
                     </div>
                   )}
-                  <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{c.sub}</div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-3)' }}>{c.sub}</div>
                 </div>
               ))}
             </div>
 
             {/* Gráfico */}
-            <div style={{
-              background: '#fff', borderRadius: 'var(--radius)',
-              padding: '24px', border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)',
-            }}>
+            <div className="card" style={{ padding: '24px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <div>
-                  <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>Evolução financeira</h2>
-                  <p style={{ fontSize: 12, color: 'var(--text-2)' }}>Total · Mensalista · Avulso</p>
+                  <h2 className="section-title">Evolução financeira</h2>
+                  <p className="section-subtitle">Total · Mensalista · Avulso</p>
                 </div>
-                <div style={{ display: 'flex', gap: 4, background: '#f2f4f8', borderRadius: 8, padding: 4 }}>
+                <div className="pill-tabs">
                   {PERIODOS.map(p => (
                     <button key={p} onClick={() => setPeriodo(p)}
-                      style={{
-                        padding: '4px 11px', borderRadius: 6, border: 'none', fontSize: 12,
-                        fontWeight: 500, cursor: 'pointer',
-                        background: periodo === p ? '#082996' : 'transparent',
-                        color: periodo === p ? '#fff' : 'var(--text-2)',
-                        transition: 'all 0.15s',
-                      }}>
+                      className={`pill-tab ${periodo === p ? 'active' : ''}`}>
                       {p}m
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-                {[['#082996','Total'],['#66d1ff','Mensalista'],['#34a853','Avulso']].map(([cor,label]) => (
+              <div style={{ display: 'flex', gap: 18, marginBottom: 18 }}>
+                {[['var(--blue)','Total'],['var(--blue-light)','Mensalista'],['var(--green)','Avulso']].map(([cor,label]) => (
                   <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <div style={{ width: 8, height: 8, borderRadius: 2, background: cor }} />
-                    <span style={{ fontSize: 11, color: 'var(--text-2)' }}>{label}</span>
+                    <span style={{ fontSize: 11.5, color: 'var(--text-2)' }}>{label}</span>
                   </div>
                 ))}
               </div>
@@ -253,18 +227,18 @@ export default function Dashboard() {
                   const hMensal = Math.round((d.mensal / maxVal) * 140)
                   const hAvulso = Math.round((d.avulso / maxVal) * 140)
                   return (
-                    <div key={d.mes} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                    <div key={d.mes} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
                       {isLast && (
-                        <span style={{ fontSize: 10, color: '#082996', fontWeight: 700 }}>
+                        <span style={{ fontSize: 10, color: 'var(--blue)', fontWeight: 700 }}>
                           R${(d.total/1000).toFixed(1)}k
                         </span>
                       )}
                       <div style={{ width: '100%', display: 'flex', gap: 2, alignItems: 'flex-end', height: 140 }}>
-                        <div style={{ flex: 1, height: hTotal, background: isLast ? '#082996' : '#dbe4ff', borderRadius: '3px 3px 0 0', transition: 'height 0.5s ease' }} />
-                        <div style={{ flex: 1, height: hMensal, background: isLast ? '#66d1ff' : '#bfdbfe', borderRadius: '3px 3px 0 0', transition: 'height 0.5s ease' }} />
-                        <div style={{ flex: 1, height: hAvulso, background: isLast ? '#34a853' : '#bbf7d0', borderRadius: '3px 3px 0 0', transition: 'height 0.5s ease' }} />
+                        <div style={{ flex: 1, height: hTotal, background: isLast ? 'var(--blue)' : '#dbe4ff', borderRadius: '3px 3px 0 0', transition: 'height 0.5s ease' }} />
+                        <div style={{ flex: 1, height: hMensal, background: isLast ? 'var(--blue-light)' : '#bfdbfe', borderRadius: '3px 3px 0 0', transition: 'height 0.5s ease' }} />
+                        <div style={{ flex: 1, height: hAvulso, background: isLast ? 'var(--green)' : '#bbf7d0', borderRadius: '3px 3px 0 0', transition: 'height 0.5s ease' }} />
                       </div>
-                      <span style={{ fontSize: 10, color: isLast ? '#082996' : 'var(--text-3)', fontWeight: isLast ? 700 : 400 }}>
+                      <span style={{ fontSize: 10, color: isLast ? 'var(--blue)' : 'var(--text-3)', fontWeight: isLast ? 700 : 500 }}>
                         {d.mes.split('/')[0]}
                       </span>
                     </div>
@@ -274,23 +248,14 @@ export default function Dashboard() {
             </div>
 
             {/* Lista de grupos */}
-            <div style={{
-              background: '#fff', borderRadius: 'var(--radius)',
-              padding: '20px 24px', border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)',
-            }}>
+            <div className="card" style={{ padding: '20px 24px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div>
-                  <h2 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>Grupos mensalistas</h2>
-                  <p style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 2 }}>{gruposAtivos.length} grupos ativos</p>
+                  <h2 className="section-title">Grupos mensalistas</h2>
+                  <p className="section-subtitle">{gruposAtivos.length} grupos ativos</p>
                 </div>
-                <button onClick={() => setModalGrupo({})}
-                  style={{
-                    fontSize: 12, padding: '6px 14px', borderRadius: 8,
-                    background: '#e8f0ff', border: 'none', color: '#082996',
-                    fontWeight: 600, cursor: 'pointer',
-                  }}>
-                  + Novo grupo
+                <button onClick={() => setModalGrupo({})} className="btn btn-soft btn-sm">
+                  <Plus size={14} weight="bold" /> Novo grupo
                 </button>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -310,57 +275,47 @@ export default function Dashboard() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
             {/* Meta mensal */}
-            <div style={{
-              background: '#fff', borderRadius: 'var(--radius)',
-              padding: '22px', border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)',
-            }}>
+            <div className="card card-pad">
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                <h2 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>Meta mensal</h2>
-                <button onClick={() => setEditandoMeta(e => !e)}
-                  style={{
-                    fontSize: 11, padding: '4px 10px', borderRadius: 6,
-                    background: '#f2f4f8', border: '1px solid var(--border)',
-                    cursor: 'pointer', color: 'var(--text-2)', fontWeight: 500,
-                  }}>
-                  {editandoMeta ? 'Salvar' : 'Editar'}
+                <h2 className="section-title">Meta mensal</h2>
+                <button onClick={() => setEditandoMeta(e => !e)} className="btn btn-ghost btn-sm" style={{ padding: '5px 10px', gap: 5 }}>
+                  <PencilSimple size={13} weight="regular" /> {editandoMeta ? 'Salvar' : 'Editar'}
                 </button>
               </div>
 
               {editandoMeta ? (
                 <div style={{ marginBottom: 14 }}>
-                  <label style={{ fontSize: 11, color: 'var(--text-2)', display: 'block', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Meta anual (R$)</label>
+                  <label className="field-label">Meta anual (R$)</label>
                   <input type="number" value={metaInput} onChange={e => setMetaInput(+e.target.value)}
-                    style={{ width: '100%', padding: '9px 12px', borderRadius: 9, border: '1.5px solid #082996', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'var(--font)' }} />
-                  <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 5 }}>Mensal: R$ {metaMensalCalc.toLocaleString('pt-BR')}</p>
+                    className="input" style={{ borderColor: 'var(--blue)' }} />
+                  <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 6 }}>Mensal: R$ {metaMensalCalc.toLocaleString('pt-BR')}</p>
                 </div>
               ) : (
                 <>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
-                    <span style={{ fontSize: 28, fontWeight: 700, color: 'var(--blue)' }}>{pctMeta}%</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 9 }}>
+                    <span style={{ fontSize: 28, fontWeight: 700, color: 'var(--blue)', letterSpacing: '-0.02em' }}>{pctMeta}%</span>
                     <span style={{ fontSize: 12, color: 'var(--text-2)' }}>
                       R$ {totalRecebido.toLocaleString('pt-BR')} / R$ {metaMensalCalc.toLocaleString('pt-BR')}
                     </span>
                   </div>
-                  <div style={{ height: 8, background: '#f0f2f5', borderRadius: 4, overflow: 'hidden', marginBottom: 10 }}>
-                    <div style={{
-                      height: '100%', width: `${pctMeta}%`,
-                      background: pctMeta >= 100
-                        ? 'linear-gradient(90deg, #34a853, #0d7a3e)'
-                        : 'linear-gradient(90deg, #082996, #1a3fbe)',
-                      borderRadius: 4, transition: 'width 0.6s ease',
+                  <div className="progress-track" style={{ marginBottom: 12 }}>
+                    <div className="progress-bar" style={{
+                      width: `${pctMeta}%`,
+                      background: pctMeta >= 100 ? 'var(--green)' : 'var(--blue)',
                     }} />
                   </div>
                 </>
               )}
 
               <div style={{
-                padding: '10px 14px', borderRadius: 9,
-                background: falta > 0 ? '#fce8e6' : '#e6f4ea',
-                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '11px 14px', borderRadius: 'var(--radius-sm)',
+                background: falta > 0 ? 'var(--red-bg)' : 'var(--green-bg)',
+                display: 'flex', alignItems: 'center', gap: 9,
               }}>
-                <span style={{ fontSize: 16 }}>{falta > 0 ? '⚠️' : '✅'}</span>
-                <span style={{ fontSize: 12, color: falta > 0 ? '#ea4335' : '#0d7a3e', fontWeight: 500 }}>
+                {falta > 0
+                  ? <WarningCircle size={17} weight="regular" color="var(--red)" />
+                  : <CheckCircle size={17} weight="regular" color="var(--green-dark)" />}
+                <span style={{ fontSize: 12, color: falta > 0 ? 'var(--red)' : 'var(--green-dark)', fontWeight: 500 }}>
                   {falta > 0
                     ? `Faltam R$ ${falta.toLocaleString('pt-BR')} para a meta`
                     : 'Meta do mês atingida!'}
@@ -369,51 +324,41 @@ export default function Dashboard() {
             </div>
 
             {/* Notificações */}
-            <div style={{
-              background: '#fff', borderRadius: 'var(--radius)',
-              padding: '22px', border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)',
-            }}>
+            <div className="card card-pad">
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                <h2 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>Notificações</h2>
-                <span style={{
-                  fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20,
-                  background: '#fce8e6', color: '#ea4335',
-                }}>
+                <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                  <Bell size={16} weight="regular" /> Notificações
+                </h2>
+                <span className="badge" style={{ background: 'var(--red-bg)', color: 'var(--red)' }}>
                   {NOTIFICACOES.filter(n => n.urgente).length} urgentes
                 </span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {NOTIFICACOES.map(n => (
                   <div key={n.id} style={{
-                    padding: '12px 14px', borderRadius: 10,
-                    background: n.urgente ? '#fff8f8' : '#fafafa',
-                    border: `1px solid ${n.urgente ? '#fde8e8' : '#f0f0f0'}`,
-                    borderLeft: `3px solid ${n.urgente ? '#ea4335' : '#e8eaed'}`,
+                    padding: '12px 14px', borderRadius: 'var(--radius-sm)',
+                    background: n.urgente ? 'var(--red-bg)' : 'var(--surface-alt)',
+                    borderLeft: `3px solid ${n.urgente ? 'var(--red)' : 'var(--border)'}`,
                   }}>
                     <div style={{ fontSize: 12.5, color: 'var(--text)', lineHeight: 1.45, marginBottom: 4 }}>{n.msg}</div>
-                    <div style={{ fontSize: 10, color: 'var(--text-3)', fontWeight: 500 }}>há {n.tempo}</div>
+                    <div style={{ fontSize: 10.5, color: 'var(--text-3)', fontWeight: 500 }}>há {n.tempo}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Status pagamentos */}
-            <div style={{
-              background: '#fff', borderRadius: 'var(--radius)',
-              padding: '22px', border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)',
-            }}>
-              <h2 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: 14 }}>Status de pagamentos</h2>
+            <div className="card card-pad">
+              <h2 className="section-title" style={{ marginBottom: 14 }}>Status de pagamentos</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {grupos.filter(g => g.status === 'ativo').map(g => (
                   <div key={g.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{
-                      width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-                      background: g.pago ? '#e6f4ea' : '#fce8e6',
+                      width: 32, height: 32, borderRadius: 9, flexShrink: 0,
+                      background: g.pago ? 'var(--green-bg)' : 'var(--red-bg)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: 12, fontWeight: 700,
-                      color: g.pago ? '#0d7a3e' : '#ea4335',
+                      color: g.pago ? 'var(--green-dark)' : 'var(--red)',
                     }}>
                       {g.nome.charAt(0)}
                     </div>
@@ -421,10 +366,10 @@ export default function Dashboard() {
                       <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{g.nome}</div>
                       <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{g.dia} · {g.horario}</div>
                     </div>
-                    <span style={{
-                      fontSize: 10, fontWeight: 600, padding: '3px 9px', borderRadius: 20, flexShrink: 0,
-                      background: g.pago ? '#e6f4ea' : '#fce8e6',
-                      color: g.pago ? '#0d7a3e' : '#ea4335',
+                    <span className="badge" style={{
+                      flexShrink: 0,
+                      background: g.pago ? 'var(--green-bg)' : 'var(--red-bg)',
+                      color: g.pago ? 'var(--green-dark)' : 'var(--red)',
                     }}>
                       {g.pago ? 'Pago' : 'Pendente'}
                     </span>

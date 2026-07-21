@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useGrupos } from '../components/useGrupos'
 import GrupoItem from '../components/GrupoItem'
 import GrupoModal from '../components/GrupoModal'
+import { Plus, MagnifyingGlass } from '@phosphor-icons/react'
 
 const FILTROS = [
   { val: 'todos', label: 'Todos' },
@@ -39,6 +40,13 @@ export default function Grupos() {
     }
   }
 
+  const stats = [
+    { label: 'Total', value: grupos.length, color: 'var(--blue)', bg: 'var(--accent)' },
+    { label: 'Pagos', value: counts.pago, color: 'var(--green-dark)', bg: 'var(--green-bg)' },
+    { label: 'Pendentes', value: counts.pendente, color: 'var(--red)', bg: 'var(--red-bg)' },
+    { label: 'Em espera', value: counts.espera, color: 'var(--yellow)', bg: 'var(--yellow-bg)' },
+  ]
+
   return (
     <div className="page">
       <div className="page-inner">
@@ -51,45 +59,28 @@ export default function Grupos() {
         )}
 
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
+        <div className="page-header">
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 3 }}>Grupos</h1>
-            <p style={{ fontSize: 13, color: 'var(--text-2)' }}>{grupos.length} grupos cadastrados</p>
+            <h1 className="page-title">Grupos</h1>
+            <p className="page-subtitle">{grupos.length} grupos cadastrados</p>
           </div>
-          <button onClick={() => setModalGrupo({})}
-            style={{
-              padding: '10px 20px', borderRadius: 10, background: 'var(--blue)',
-              color: '#fff', border: 'none', fontSize: 13, fontWeight: 600,
-              cursor: 'pointer', boxShadow: '0 4px 14px rgba(8,41,150,0.3)',
-              display: 'flex', alignItems: 'center', gap: 7,
-            }}>
-            <span style={{ fontSize: 18, lineHeight: 1 }}>+</span> Novo grupo
+          <button onClick={() => setModalGrupo({})} className="btn btn-primary">
+            <Plus size={16} weight="bold" /> Novo grupo
           </button>
         </div>
 
         {/* Stats rápidas */}
         <div className="kpi-grid" style={{ marginBottom: 20 }}>
-          {[
-            { label: 'Total', value: grupos.length, color: '#082996', bg: '#e8f0ff' },
-            { label: 'Pagos', value: counts.pago, color: '#0d7a3e', bg: '#e6f4ea' },
-            { label: 'Pendentes', value: counts.pendente, color: '#ea4335', bg: '#fce8e6' },
-            { label: 'Em espera', value: counts.espera, color: '#b45309', bg: '#fef7e0' },
-          ].map(c => (
-            <div key={c.label} style={{
-              background: '#fff', borderRadius: 'var(--radius)',
-              padding: '18px 20px', border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-sm)',
-              display: 'flex', alignItems: 'center', gap: 14,
-            }}>
-              <div style={{
+          {stats.map(c => (
+            <div key={c.label} className="card" style={{ padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div className="icon-tile" style={{
                 width: 44, height: 44, borderRadius: 12, background: c.bg,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 22, fontWeight: 700, color: c.color,
+                fontSize: 20, fontWeight: 700, color: c.color,
               }}>
                 {c.value}
               </div>
               <div>
-                <div style={{ fontSize: 12, color: 'var(--text-2)', fontWeight: 500 }}>{c.label}</div>
+                <div style={{ fontSize: 12.5, color: 'var(--text-2)', fontWeight: 600 }}>{c.label}</div>
                 <div style={{ fontSize: 11, color: 'var(--text-3)' }}>grupos</div>
               </div>
             </div>
@@ -97,40 +88,27 @@ export default function Grupos() {
         </div>
 
         {/* Search + filtros */}
-        <div style={{
-          background: '#fff', borderRadius: 'var(--radius)',
-          padding: '16px 20px', border: '1px solid var(--border)',
-          boxShadow: 'var(--shadow-sm)',
+        <div className="card" style={{
+          padding: '16px 20px',
           display: 'flex', gap: 12, alignItems: 'center',
           marginBottom: 16, flexWrap: 'wrap',
         }}>
           <div style={{ flex: 1, minWidth: 200, position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 15, color: 'var(--text-3)' }}>🔍</span>
+            <MagnifyingGlass size={16} weight="regular" style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)' }} />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Buscar grupo pelo nome..."
-              style={{
-                width: '100%', padding: '9px 14px 9px 38px',
-                borderRadius: 9, border: '1.5px solid var(--border)',
-                fontSize: 13, outline: 'none', background: '#fafafa',
-                boxSizing: 'border-box', fontFamily: 'var(--font)',
-                color: 'var(--text)',
-              }}
+              className="input"
+              style={{ paddingLeft: 38, background: 'var(--surface-alt)' }}
             />
           </div>
-          <div style={{ display: 'flex', gap: 6, background: '#f2f4f8', borderRadius: 9, padding: 4 }}>
+          <div className="pill-tabs">
             {FILTROS.map(({ val, label }) => (
               <button key={val} onClick={() => setFiltro(val)}
-                style={{
-                  padding: '6px 14px', borderRadius: 7, border: 'none',
-                  fontSize: 12, fontWeight: 500, cursor: 'pointer',
-                  background: filtro === val ? '#082996' : 'transparent',
-                  color: filtro === val ? '#fff' : 'var(--text-2)',
-                  transition: 'all 0.15s',
-                }}>
+                className={`pill-tab ${filtro === val ? 'active' : ''}`}>
                 {label}
-                <span style={{ marginLeft: 5, fontSize: 10, opacity: filtro === val ? 0.8 : 0.5 }}>{counts[val]}</span>
+                <span style={{ marginLeft: 5, fontSize: 10, opacity: filtro === val ? 0.8 : 0.55 }}>{counts[val]}</span>
               </button>
             ))}
           </div>
@@ -139,14 +117,12 @@ export default function Grupos() {
         {/* Lista */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {filtered.length === 0 ? (
-            <div style={{
+            <div className="card" style={{
               textAlign: 'center', padding: '56px 20px',
               color: 'var(--text-3)', fontSize: 14,
-              background: '#fff', borderRadius: 'var(--radius)',
-              border: '1px solid var(--border)',
             }}>
-              <div style={{ fontSize: 32, marginBottom: 10 }}>🔍</div>
-              Nenhum grupo encontrado para esta busca
+              <MagnifyingGlass size={30} weight="regular" style={{ marginBottom: 10 }} />
+              <div>Nenhum grupo encontrado para esta busca</div>
             </div>
           ) : filtered.map(g => (
             <GrupoItem key={g.id} grupo={g}
