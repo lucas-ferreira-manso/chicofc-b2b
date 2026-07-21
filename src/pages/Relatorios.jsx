@@ -11,6 +11,7 @@ export default function Relatorios() {
   const dados = HISTORICO_MENSAL.slice(-periodo)
   const maxTotal = Math.max(...dados.map(d => d.total))
   const metaMensal = Math.round(CONFIG.metaAnual / 12)
+  const chartMax = Math.max(maxTotal, metaMensal)
 
   const totalPeriodo = dados.reduce((s, d) => s + d.total, 0)
   const totalMensal = dados.reduce((s, d) => s + d.mensal, 0)
@@ -129,13 +130,15 @@ export default function Relatorios() {
         {/* Gráficos */}
         <div className="two-col" style={{ marginBottom: 20 }}>
           {/* Barras */}
-          <div className="card" style={{ padding: '24px' }}>
-            <h2 className="section-title">Receita mensal</h2>
-            <p className="section-subtitle" style={{ marginBottom: 20 }}>Total por mês — linha de meta</p>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 180, position: 'relative' }}>
+          <div className="card" style={{ padding: '24px', display: 'flex', flexDirection: 'column' }}>
+            <div>
+              <h2 className="section-title">Receita mensal</h2>
+              <p className="section-subtitle">Total por mês — linha de meta</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 180, position: 'relative', marginTop: 'auto', paddingTop: 28 }}>
               <div style={{
                 position: 'absolute',
-                bottom: Math.round((metaMensal / maxTotal) * 160) + 20,
+                bottom: Math.round((metaMensal / chartMax) * 160) + 20,
                 left: 0, right: 0,
                 borderTop: '2px dashed var(--red)',
                 display: 'flex', alignItems: 'center',
@@ -146,7 +149,7 @@ export default function Relatorios() {
               </div>
               {dados.map((d, i) => {
                 const isLast = i === dados.length - 1
-                const hTotal = Math.round((d.total / maxTotal) * 160)
+                const hTotal = Math.round((d.total / chartMax) * 160)
                 return (
                   <div key={d.mes} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                     <div style={{ fontSize: 10, color: isLast ? 'var(--blue)' : 'var(--text-3)', fontWeight: 700 }}>
