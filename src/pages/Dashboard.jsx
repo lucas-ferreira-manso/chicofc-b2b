@@ -134,12 +134,14 @@ export default function Dashboard() {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 14 }}>
                     <span style={{
-                      display: 'inline-flex', alignItems: 'center', gap: 4,
+                      display: 'inline-flex', alignItems: 'center', gap: 5,
                       fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 'var(--radius-pill)',
-                      background: crescMes >= 0 ? 'rgba(52,211,153,0.2)' : 'rgba(248,113,113,0.2)',
-                      color: crescMes >= 0 ? '#6ee7b0' : '#fca5a5',
+                      background: 'rgba(255,255,255,0.14)',
+                      color: '#fff',
                     }}>
-                      {crescMes >= 0 ? <TrendUp size={13} weight="bold" /> : <TrendDown size={13} weight="bold" />}
+                      {crescMes >= 0
+                        ? <TrendUp size={13} weight="bold" color="#4ade80" />
+                        : <TrendDown size={13} weight="bold" color="#f87171" />}
                       {Math.abs(crescMes)}% vs mês anterior
                     </span>
                   </div>
