@@ -51,7 +51,7 @@ export default function Relatorios() {
       </div>
       <table><thead><tr><th>Mês</th><th>Mensalista</th><th>Avulso</th><th>Total</th><th>vs Meta</th></tr></thead>
       <tbody>${rows}</tbody></table>
-      <footer>ChicoFC · Sistema de Gestão de Quadras · Meta mensal: R$ ${metaMensal.toLocaleString('pt-BR')}</footer>
+      <footer>Pivô · Sistema de Gestão de Quadras · Meta mensal: R$ ${metaMensal.toLocaleString('pt-BR')}</footer>
       </body></html>`
       const blob = new Blob([html], { type: 'text/html' })
       const url = URL.createObjectURL(blob)
@@ -60,7 +60,7 @@ export default function Relatorios() {
       const linhas = dados.map(d =>
         `${d.mes}   Mensal: R$${d.mensal.toLocaleString('pt-BR').padStart(8)}   Avulso: R$${d.avulso.toLocaleString('pt-BR').padStart(6)}   Total: R$${d.total.toLocaleString('pt-BR').padStart(8)}   ${Math.round((d.total/metaMensal)*100)}% da meta`
       ).join('\n')
-      const txt = `RELATÓRIO FINANCEIRO — ${VENUE.nome}\n${periodo_str}\nGerado em: ${new Date().toLocaleDateString('pt-BR')}\n${'─'.repeat(70)}\n\nResumo\nReceita total: R$ ${totalPeriodo.toLocaleString('pt-BR')}\nMensalistas:   R$ ${totalMensal.toLocaleString('pt-BR')}\nAvulsos:       R$ ${totalAvulso.toLocaleString('pt-BR')}\nCrescimento:   ${crescimento>=0?'+':''}${crescimento}%\n\n${'─'.repeat(70)}\n\n${linhas}\n\n${'─'.repeat(70)}\nMeta mensal: R$ ${metaMensal.toLocaleString('pt-BR')}\nChicoFC · Sistema de Gestão de Quadras`
+      const txt = `RELATÓRIO FINANCEIRO — ${VENUE.nome}\n${periodo_str}\nGerado em: ${new Date().toLocaleDateString('pt-BR')}\n${'─'.repeat(70)}\n\nResumo\nReceita total: R$ ${totalPeriodo.toLocaleString('pt-BR')}\nMensalistas:   R$ ${totalMensal.toLocaleString('pt-BR')}\nAvulsos:       R$ ${totalAvulso.toLocaleString('pt-BR')}\nCrescimento:   ${crescimento>=0?'+':''}${crescimento}%\n\n${'─'.repeat(70)}\n\n${linhas}\n\n${'─'.repeat(70)}\nMeta mensal: R$ ${metaMensal.toLocaleString('pt-BR')}\nPivô · Sistema de Gestão de Quadras`
       const blob = new Blob([txt], { type: 'text/plain' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a'); a.href = url; a.download = `relatorio-${VENUE.nome}-${periodo}m.txt`; a.click()

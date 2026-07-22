@@ -78,8 +78,17 @@ export default function Sidebar() {
         <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '9px 12px', borderRadius: 'var(--radius-sm)', color: 'rgba(255,255,255,0.55)', fontSize: 13.5, fontWeight: 500, textDecoration: 'none' }}>
           <Gear size={19} weight="regular" /> Configurações
         </a>
-        <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.22)', textAlign: 'center', lineHeight: 1.5, marginTop: 14 }}>
-          Powered by ChicoFC
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, fontSize: 10.5, color: 'rgba(255,255,255,0.22)', lineHeight: 1.5, marginTop: 14 }}>
+          <svg viewBox="0 0 64 64" width="11" height="11" fill="none" aria-hidden="true">
+            <g stroke="currentColor" strokeWidth="9" strokeLinecap="round">
+              <polyline points="10,23 10,10 23,10" />
+              <polyline points="41,10 54,10 54,23" />
+              <polyline points="54,41 54,54 41,54" />
+              <polyline points="23,54 10,54 10,41" />
+            </g>
+            <circle cx="32" cy="32" r="7.5" fill="currentColor" />
+          </svg>
+          Powered by Pivô
         </div>
       </div>
     </aside>

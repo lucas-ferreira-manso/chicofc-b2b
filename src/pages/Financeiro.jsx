@@ -22,7 +22,7 @@ export default function Financeiro() {
     const linhas = gruposAtivos.map(g =>
       `${g.nome.padEnd(20)} ${g.tipo === 'mensal' ? 'Mensalista' : 'Avulso    '} R$ ${String(g.valor).padStart(6)} ${g.pago ? 'PAGO    ' : 'PENDENTE'}`
     ).join('\n')
-    const conteudo = `RELATÓRIO FINANCEIRO — ${VENUE.nome}\nMaio de 2025\nGerado em: ${new Date().toLocaleDateString('pt-BR')}\n${'─'.repeat(60)}\n\nRESUMO\nRecebido:  R$ ${totalRecebido.toLocaleString('pt-BR')}\nPendente:  R$ ${totalPendente.toLocaleString('pt-BR')}\nTotal:     R$ ${totalEsperado.toLocaleString('pt-BR')}\nTaxa:      ${pct}%\n\n${'─'.repeat(60)}\n\n${linhas}\n\n${'─'.repeat(60)}\nChicoFC · Sistema de Gestão de Quadras`
+    const conteudo = `RELATÓRIO FINANCEIRO — ${VENUE.nome}\nMaio de 2025\nGerado em: ${new Date().toLocaleDateString('pt-BR')}\n${'─'.repeat(60)}\n\nRESUMO\nRecebido:  R$ ${totalRecebido.toLocaleString('pt-BR')}\nPendente:  R$ ${totalPendente.toLocaleString('pt-BR')}\nTotal:     R$ ${totalEsperado.toLocaleString('pt-BR')}\nTaxa:      ${pct}%\n\n${'─'.repeat(60)}\n\n${linhas}\n\n${'─'.repeat(60)}\nPivô · Sistema de Gestão de Quadras`
     const blob = new Blob([conteudo], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -58,7 +58,7 @@ export default function Financeiro() {
     </div>
     <table><thead><tr><th>Grupo</th><th>Tipo</th><th>Horário</th><th>Valor</th><th>Status</th></tr></thead>
     <tbody>${rows}</tbody></table>
-    <footer>ChicoFC · Sistema de Gestão de Quadras</footer></body></html>`
+    <footer>Pivô · Sistema de Gestão de Quadras</footer></body></html>`
     const blob = new Blob([html], { type: 'text/html' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')

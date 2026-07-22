@@ -29,7 +29,7 @@ export const VENUE = {
 }
 
 export const GRUPOS_INICIAL = [
-  { id: 1, nome: 'ChicoFC',        dia: 'Quarta',  horario: '21h00', quadra: 'society', jogadores: 14, tipo: 'mensal', valor: 760, status: 'ativo',  pago: true,  responsavel: '5548999990001' },
+  { id: 1, nome: 'Amigos FC',      dia: 'Quarta',  horario: '21h00', quadra: 'society', jogadores: 14, tipo: 'mensal', valor: 760, status: 'ativo',  pago: true,  responsavel: '5548999990001' },
   { id: 2, nome: 'Fut Raiz',       dia: 'Segunda', horario: '20h00', quadra: 'society', jogadores: 14, tipo: 'mensal', valor: 760, status: 'ativo',  pago: true,  responsavel: '5548999990002' },
   { id: 3, nome: 'Os Crias',       dia: 'Quarta',  horario: '19h00', quadra: 'society', jogadores: 12, tipo: 'mensal', valor: 760, status: 'ativo',  pago: false, responsavel: '5548999990003' },
   { id: 4, nome: 'Pelada do Beto', dia: 'Sexta',   horario: '21h00', quadra: 'society', jogadores: 14, tipo: 'mensal', valor: 760, status: 'ativo',  pago: false, responsavel: '5548999990004' },
@@ -52,7 +52,7 @@ function buildAgendaInicial() {
     { quadra: 'society', dia: 'Segunda', h: '20h00', nome: 'Fut Raiz',       tipo: 'mensal' },
     { quadra: 'society', dia: 'Terça',   h: '21h00', nome: 'Terça Pesada',   tipo: 'mensal' },
     { quadra: 'society', dia: 'Quarta',  h: '19h00', nome: 'Os Crias',       tipo: 'mensal' },
-    { quadra: 'society', dia: 'Quarta',  h: '21h00', nome: 'ChicoFC',        tipo: 'mensal' },
+    { quadra: 'society', dia: 'Quarta',  h: '21h00', nome: 'Amigos FC',      tipo: 'mensal' },
     { quadra: 'society', dia: 'Quinta',  h: '20h00', nome: 'Quinta FC',      tipo: 'mensal' },
     { quadra: 'society', dia: 'Sexta',   h: '21h00', nome: 'Pelada do Beto', tipo: 'mensal' },
     { quadra: 'society', dia: 'Sábado',  h: '19h00', nome: 'Boleiros SC',    tipo: 'mensal' },
@@ -87,5 +87,5 @@ export const NOTIFICACOES = [
   { id: 1, msg: 'Pelada do Beto ainda não pagou maio', tempo: '2h', urgente: true  },
   { id: 2, msg: 'Sábado Bom quer reservar Sáb 20h00', tempo: '5h', urgente: true  },
   { id: 3, msg: 'Os Crias ainda não pagou maio',       tempo: '1d', urgente: true  },
-  { id: 4, msg: 'ChicoFC: todos 14 confirmados para quarta', tempo: '1d', urgente: false },
+  { id: 4, msg: 'Amigos FC: todos 14 confirmados para quarta', tempo: '1d', urgente: false },
 ]
